@@ -1,5 +1,5 @@
 import apiClient from "./apiClient";
-import { tokenStore } from "./auth";
+import { tokenStore } from "./tokenStore";
 
 export { API_URL } from "./apiClient";
 
@@ -18,15 +18,21 @@ export class ApiError extends Error {
   }
 }
 
-type Options = { method?: "GET" | "POST" | "PATCH" | "DELETE"; body?: unknown; form?: FormData };
+type Options = {
+  method?: "GET" | "POST" | "PATCH" | "DELETE";
+  body?: Record<string, any> | BodyInit | null;
+  form?: FormData;
+};
 
 export const api = async <T = unknown,>(path: string, { method = "GET", body, form }: Options = {}): Promise<Envelope<T>> => {
   const headers: Record<string, string> = {};
   const token = tokenStore.get();
-  if (token) headers.Authorization = `Bearer ${token}`;  
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const requestBody = form ?? body;
 
   try {
-    return await apiClient<Envelope<T>>(path, { method, body: form ?? body, headers });
+    return await apiClient<Envelope<T>>(path, { method, body: requestBody, headers });
   } catch (err: any) {
     throw new ApiError(err?.data?.message ?? err?.message ?? `Request failed (${err?.status ?? 0})`, err?.status ?? 0);
   }

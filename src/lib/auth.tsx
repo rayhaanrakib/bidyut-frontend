@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { api, tokenStore } from "./api";
+import { api } from "./api";
+import { tokenStore } from "./tokenStore";
 import type { User } from "./types";
 
 interface RegisterInput {
