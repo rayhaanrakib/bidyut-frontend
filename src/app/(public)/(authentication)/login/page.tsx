@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Log in · BIDYUT" };
 
 export default function LoginPage() {
   return (
-    <AuthShell title="Welcome back" sub="Log in to report and track outages.">
+    <AuthShell title="Welcome back" subtitle="Log in to report and track outages.">
       <LoginForm />
     </AuthShell>
   );
