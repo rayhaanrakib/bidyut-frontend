@@ -1,5 +1,3 @@
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
 import { Hero } from "@/components/home/hero";
 import { Ticker } from "@/components/home/ticker";
 import { Problem } from "@/components/home/problem";
@@ -17,7 +15,6 @@ import { Cta } from "@/components/home/cta";
 const HomePage = () => {
   return (
     <div className="min-h-screen">
-      <Navbar />
       <main>
         <Hero />
         <Ticker />
@@ -33,7 +30,6 @@ const HomePage = () => {
         <Faq />
         <Cta />
       </main>
-      <Footer />
     </div>
   );
 };
