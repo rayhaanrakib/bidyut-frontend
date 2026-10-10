@@ -8,10 +8,20 @@
   --color-card: var(--card);
   --color-surface: var(--surface);
   --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
   --color-accent: var(--accent);
   --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-destructive: var(--danger);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --color-line: var(--line);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -20,30 +30,50 @@
 
 /* ---------- Light theme: green carries the text ---------- */
 :root {
+  color-scheme: light;
   --background: #f4faf7;
   --foreground: #0b3d2e;
   --card: #ffffff;
   --surface: #eaf5ef;
   --muted: #527367;
+  --muted-foreground: #527367;
   --primary: #006a4e;
   --primary-foreground: #f2faf6;
+  --secondary: #eaf5ef;
+  --secondary-foreground: #0b3d2e;
+  --popover: #ffffff;
+  --popover-foreground: #0b3d2e;
   --accent: #00a878;
   --danger: #d92637;
+  --danger-foreground: #ffffff;
+  --border: #d9e8e0;
+  --input: #d9e8e0;
+  --ring: #00a878;
   --line: #d9e8e0;
 }
 
-/* ---------- Dark theme: deepened flag green ---------- */
+/* ---------- Dark theme: deepened flag green, dashboard-grade contrast ---------- */
 .dark {
+  color-scheme: dark;
   --background: #071812;
-  --foreground: #e9f5ef;
-  --card: #0c241c;
-  --surface: #0e2b21;
-  --muted: #9dbcae;
-  --primary: #2fd1a0;
+  --foreground: #f2faf6;
+  --card: #0e2a20;
+  --surface: #16382b;
+  --muted: #a9c9ba;
+  --muted-foreground: #a9c9ba;
+  --primary: #3ce0af;
   --primary-foreground: #06231c;
-  --accent: #35d0a5;
-  --danger: #ff5a6b;
-  --line: rgba(233, 245, 239, 0.09);
+  --secondary: #16382b;
+  --secondary-foreground: #f2faf6;
+  --popover: #123025;
+  --popover-foreground: #f2faf6;
+  --accent: #3ce0af;
+  --danger: #ff6b7a;
+  --danger-foreground: #3d0a12;
+  --border: rgba(233, 245, 239, 0.16);
+  --input: rgba(233, 245, 239, 0.16);
+  --ring: #3ce0af;
+  --line: rgba(233, 245, 239, 0.16);
 }
 
 html { scroll-behavior: smooth; }
@@ -100,3 +130,15 @@ html[lang="bn"] body { font-family: var(--font-bengali); }
 
 /* ---------- thin scrollbars ---------- */
 * { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.bg-muted,
+.dark .bg-muted,
+.hover\:bg-muted:hover,
+.dark .hover\:bg-muted:hover,
+.dark .dark\:bg-muted {
+  background-color: var(--surface);
+}
+
+.bg-muted\/40,
+.dark .bg-muted\/40 {
+  background-color: color-mix(in oklab, var(--surface) 40%, transparent);
+}

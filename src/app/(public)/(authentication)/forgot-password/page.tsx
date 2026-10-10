@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Reset password · BIDYUT" };
 
 export default function ForgotPasswordPage() {
   return (
-    <AuthShell title="Reset your password" sub="We'll email you a 6-digit reset code.">
+    <AuthShell title="Reset your password" subtitle="We'll email you a 6-digit reset code.">
       <ForgotForm />
     </AuthShell>
   );
