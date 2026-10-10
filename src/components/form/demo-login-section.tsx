@@ -16,7 +16,7 @@ const DEMO_TILES: { role: DemoRole; icon: LucideIcon; labelKey: DictKey; blurbKe
 
 interface DemoLoginSectionProps {
   activeRole: DemoRole | null;
-  disabled: boolean;          
+  disabled: boolean;
   onSelect: (role: DemoRole) => void;
 }
 
@@ -25,7 +25,7 @@ const DemoLoginSection = ({ activeRole, disabled, onSelect }: DemoLoginSectionPr
   const active = DEMO_TILES.find((tile) => tile.role === activeRole);
 
   return (
-    <div className="rounded-2xl border border-dashed bg-muted/40 p-3.5">
+    <div className="rounded-2xl border border-dashed p-3.5">
       <header className="mb-2.5 flex items-center justify-between gap-2">
         <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
           <Zap className="h-3.5 w-3.5 text-primary" aria-hidden="true" />

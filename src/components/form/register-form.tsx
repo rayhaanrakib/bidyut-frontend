@@ -3,13 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { userRegister } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { FieldError, Input, Select } from "@/components/ui/input";
-import { useMutation2 } from "@/hooks";
+import { useRegistration } from "@/hooks";
 import { useI18n } from "@/lib/i18n";
 import { registerSchema } from "@/validation";
 import type { DictKey } from "@/lib/dictionaries";
@@ -28,7 +29,7 @@ type RegisterValues = z.infer<typeof registerSchema>;
 export const RegisterForm = () => {
   const router = useRouter();
   const { t } = useI18n();
-  const registerUser = useMutation2(userRegister);
+  const registerUser = useRegistration();
 
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
@@ -39,7 +40,13 @@ export const RegisterForm = () => {
     <div className="flex flex-col gap-5">
       <form
         onSubmit={handleSubmit((values) =>
-          registerUser.mutate(values, { onSuccess: () => router.push(`/verify-otp?email=${values.email}`) }),
+          registerUser.mutate(values, {
+            onSuccess: (res) => {
+              toast.success(res.message ?? t("toast.done"));
+              router.push(`/verify-otp?email=${values.email}`);
+            },
+            onError: (err) => toast.error(err.message || t("toast.failed")),
+          }),
         )}
         noValidate
       >
@@ -75,8 +82,7 @@ export const RegisterForm = () => {
       </form>
 
       <p className="text-center text-sm text-muted">
-        {t("auth.toLogin")}
-        <Link href="/login" className="ml-1 font-medium text-primary underline-offset-4 hover:underline">Login</Link>
+        <Link href="/login" className="ml-1 font-medium text-primary underline-offset-4 hover:underline">{t("auth.toLogin")}</Link>
       </p>
     </div>
   );
