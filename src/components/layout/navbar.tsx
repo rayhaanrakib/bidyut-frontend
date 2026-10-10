@@ -1,20 +1,23 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { LayoutDashboard, Menu, X, Zap } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, X, Zap } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
-import { cn } from "@/lib/utils";
+import { cn, roleHome } from "@/lib/utils";
+import { useSignOut } from "@/hooks";
 import { Button } from "../ui/button";
+import UserMenu from "../modules/user-menu/UserMenu";
 import { LangToggle } from "./lang-toggle";
 import { ThemeToggle } from "./theme-toggle";
 
 export const Navbar = () => {
   const { user } = useAuth();
   const { t } = useI18n();
+  const { signOut, pending } = useSignOut();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -30,8 +33,8 @@ export const Navbar = () => {
     { href: "/#features", label: t("nav.features") },
     { href: "/#how", label: t("nav.how") },
     { href: "/#pricing", label: t("nav.pricing") },
-    { href: "/grid-status", label: t("nav.status") },
-    { href: "/schedules", label: t("nav.schedules") },
+    { href: "/about", label: t("nav.about") },
+    { href: "/contact", label: t("nav.contact") },
   ];
 
   return (
@@ -65,11 +68,7 @@ export const Navbar = () => {
           <LangToggle />
           <ThemeToggle />
           {user ? (
-            <Link href="/dashboard">
-              <Button size="sm">
-                <LayoutDashboard className="h-4 w-4" /> {t("nav.dashboard")}
-              </Button>
-            </Link>
+            <UserMenu />
           ) : (
             <Link href="/login">
               <Button size="sm">{t("nav.login")}</Button>
@@ -97,10 +96,24 @@ export const Navbar = () => {
               <div className="mt-2 flex items-center gap-2">
                 <LangToggle />
                 <ThemeToggle />
-                <Link href={user ? "/dashboard" : "/login"} className="flex-1" onClick={() => setOpen(false)}>
-                  <Button size="sm" className="w-full">{user ? t("nav.dashboard") : t("nav.login")}</Button>
-                </Link>
               </div>
+              {user ? (
+                <div className="mt-2 flex flex-col gap-2 border-t border-line pt-3" onClick={() => setOpen(false)}>
+                  <Link href={roleHome(user.role)}>
+                    <Button size="sm" className="w-full">
+                      <LayoutDashboard className="h-4 w-4" /> {t("nav.dashboard")}
+                    </Button>
+                  </Link>
+                  <Button size="sm" variant="outline" className="w-full text-destructive hover:text-destructive"
+                    disabled={pending} onClick={signOut}>
+                    <LogOut className="h-4 w-4" /> {pending ? t("auth.submitting") : t("nav.logout")}
+                  </Button>
+                </div>
+              ) : (
+                <Link href="/login" className="mt-2" onClick={() => setOpen(false)}>
+                  <Button size="sm" className="w-full">{t("nav.login")}</Button>
+                </Link>
+              )}
             </div>
           </motion.div>
         )}

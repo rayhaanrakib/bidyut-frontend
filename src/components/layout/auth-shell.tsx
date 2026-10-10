@@ -11,7 +11,7 @@ type AuthShellProps = {
 
 export const AuthShell = ({ title, subtitle, children }: AuthShellProps) => {
   return (
-    <div className="grid min-h-screen lg:grid-cols-2">
+    <div className="grid min-h-screen lg:grid-cols-2 py-12">
       <aside className="relative hidden flex-col justify-center border-r border-line px-12 py-16 lg:flex xl:px-20">
         <div className="max-w-xl">
           <h2 className="text-5xl font-extrabold leading-[1.08] tracking-tight xl:text-6xl">

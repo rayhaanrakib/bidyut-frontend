@@ -26,8 +26,8 @@ export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
   const setLang = (lang: Lang) => {
     setLangState(lang);
     localStorage.setItem(LANG_KEY, lang);
-    document.cookie = `bidyut.lang=${lang}; path=/; max-age=31536000; samesite=lax`; // readable server-side too
-    document.documentElement.lang = lang; // also switches the font
+    document.cookie = `bidyut.lang=${lang}; path=/; max-age=31536000; samesite=lax`;
+    document.documentElement.lang = lang;
   };
 
   const t = (key: DictKey) => dictionaries[lang][key] ?? dictionaries.en[key] ?? key;

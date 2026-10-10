@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Hind_Siliguri } from "next/font/google";
 import "./globals.css";
-// import { Providers } from "@/providers";
+import { Providers } from "@/providers";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const hind = Hind_Siliguri({
@@ -29,15 +29,14 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
-  
+
 export const viewport: Viewport = { themeColor: "#071812" };
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${hind.variable} font-sans`}>
-        {/* <Providers>{children}</Providers> */}
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

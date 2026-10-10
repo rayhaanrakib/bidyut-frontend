@@ -26,3 +26,11 @@ export const Counter = ({ to, suffix = "" }: { to: number; suffix?: string }) =>
   }, [inView, to]);
   return <span ref={ref}>{n.toLocaleString()}{suffix}</span>;
 };
+
+export const SectionHeading = ({ kicker, title, sub }: { kicker?: string; title: string; sub?: string }) => (
+  <FadeIn className="mx-auto max-w-2xl text-center mb-12">
+    {kicker && <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">{kicker}</p>}
+    <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">{title}</h2>
+    {sub && <p className="mt-3 leading-relaxed text-muted">{sub}</p>}
+  </FadeIn>
+);
