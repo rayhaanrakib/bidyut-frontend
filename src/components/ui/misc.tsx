@@ -34,3 +34,9 @@ export const SectionHeading = ({ kicker, title, sub }: { kicker?: string; title:
     {sub && <p className="mt-3 leading-relaxed text-muted">{sub}</p>}
   </FadeIn>
 );
+
+export const EmptyState = ({ title, sub }: { title: string; sub?: string }) => (
+  <FadeIn className="mx-auto max-w-2xl text-center mb-12">
+    <SectionHeading kicker="No data" title={title} sub={sub} />
+  </FadeIn>
+);

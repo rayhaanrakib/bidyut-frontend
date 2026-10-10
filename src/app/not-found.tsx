@@ -30,20 +30,12 @@ export default function NotFound() {
         <span className="bg-gradient-to-b from-foreground to-muted bg-clip-text text-transparent">404</span>
       </motion.h1>
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.6 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.28, type: "spring", stiffness: 200, damping: 14 }}
-        className="-mt-2 flex items-center gap-2 text-sm font-semibold text-primary"
-      >
-        <Zap className="h-4 w-4 animate-pulse" /> Lost in the grid
-      </motion.div>
 
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.36 }}
-        className="mt-4 max-w-md text-sm leading-relaxed text-muted"
+        className="mt-6 max-w-md text-sm leading-relaxed text-muted"
       >
         This feeder doesn&apos;t exist — the page you&apos;re after was moved, renamed, or never
         energized. The live grid, however, is one click away.

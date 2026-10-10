@@ -32,9 +32,13 @@ export default function UserMenu() {
         aria-expanded={open}
         className="flex items-center gap-2 rounded-full border border-line bg-surface py-1 pl-1 pr-2.5 text-sm font-medium transition hover:border-primary/50"
       >
-        <span className="grid h-7 w-7 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-          {user?.name?.[0]?.toUpperCase() ?? <UserRound className="h-4 w-4" />}
-        </span>
+        {user?.imageUrl ? (
+          <img src={user.imageUrl} alt="" className="h-7 w-7 rounded-full object-cover" />
+        ) : (
+          <span className="grid h-7 w-7 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+            {user?.name?.[0]?.toUpperCase() ?? <UserRound className="h-4 w-4" />}
+          </span>
+        )}
         <span className="hidden max-w-28 truncate sm:block">{user?.name}</span>
       </button>
 
@@ -52,12 +56,20 @@ export default function UserMenu() {
           >
             {t("nav.dashboard")}
           </Link>
+          <Link
+            href="/profile"
+            onClick={() => setOpen(false)}
+            role="menuitem"
+            className="block px-4 py-2.5 text-sm hover:bg-surface"
+          >
+            {t("dash.profile")}
+          </Link>
           <button
             type="button"
             role="menuitem"
             onClick={signOut}
             disabled={pending}
-            className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-destructive hover:bg-surface disabled:opacity-60"
+            className="flex w-full items-center gap-2 border-t border-line px-4 py-2.5 text-left text-sm text-destructive hover:bg-surface disabled:opacity-60"
           >
             <LogOut className="h-4 w-4" /> {pending ? t("auth.submitting") : t("nav.logout")}
           </button>

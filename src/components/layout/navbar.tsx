@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { LayoutDashboard, LogOut, Menu, X, Zap } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, UserRound, X, Zap } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,7 +11,6 @@ import { cn, roleHome } from "@/lib/utils";
 import { useSignOut } from "@/hooks";
 import { Button } from "../ui/button";
 import UserMenu from "../modules/user-menu/UserMenu";
-import { LangToggle } from "./lang-toggle";
 import { ThemeToggle } from "./theme-toggle";
 
 export const Navbar = () => {
@@ -33,6 +32,7 @@ export const Navbar = () => {
     { href: "/#features", label: t("nav.features") },
     { href: "/#how", label: t("nav.how") },
     { href: "/#pricing", label: t("nav.pricing") },
+    { href: "/coverage", label: t("nav.coverage") },
     { href: "/about", label: t("nav.about") },
     { href: "/contact", label: t("nav.contact") },
   ];
@@ -65,7 +65,6 @@ export const Navbar = () => {
         </div>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <LangToggle />
           <ThemeToggle />
           {user ? (
             <UserMenu />
@@ -94,7 +93,6 @@ export const Navbar = () => {
                 </Link>
               ))}
               <div className="mt-2 flex items-center gap-2">
-                <LangToggle />
                 <ThemeToggle />
               </div>
               {user ? (
@@ -102,6 +100,11 @@ export const Navbar = () => {
                   <Link href={roleHome(user.role)}>
                     <Button size="sm" className="w-full">
                       <LayoutDashboard className="h-4 w-4" /> {t("nav.dashboard")}
+                    </Button>
+                  </Link>
+                  <Link href="/profile">
+                    <Button size="sm" variant="outline" className="w-full">
+                      <UserRound className="h-4 w-4" /> {t("dash.profile")}
                     </Button>
                   </Link>
                   <Button size="sm" variant="outline" className="w-full text-destructive hover:text-destructive"
