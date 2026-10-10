@@ -7,7 +7,7 @@ import { AccessDenied } from "./access-denied";
 
 export const RoleGuard = ({ allow, children }: { allow: Role[]; children: ReactNode }) => {
   const { user } = useAuth();
-  if (!user) return null; 
+  if (!user) return null;
   if (!allow.includes(user.role)) return <AccessDenied role={user.role} needed={allow} />;
   return <>{children}</>;
 };
