@@ -1,23 +1,26 @@
-import apiClient from "@/lib/apiClient";
+import { api } from "@/lib/api";
+import type { User } from "@/types";
+
+export type AuthSession = { user: User; accessToken: string; refreshToken: string; isNewUser?: boolean };
 
 export const userLogin = (payload: { email: string; password: string }) =>
-  apiClient("/auth/login", { method: "POST", body: payload });
+  api<AuthSession>("/auth/login", { method: "POST", body: payload });
 
 export const userRegister = (payload: { name: string; email: string; password: string; category: string }) =>
-  apiClient("/auth/register", { method: "POST", body: payload });
+  api<{ email: string }>("/auth/register", { method: "POST", body: payload });
 
 export const verifyOtp = (payload: { email: string; otp: string }) =>
-  apiClient("/auth/verify-otp", { method: "POST", body: payload });
+  api<AuthSession>("/auth/verify-otp", { method: "POST", body: payload });
 
-export const getMe = () => apiClient("/auth/me");
+export const getMe = () => api<{ user: User }>("/auth/me");
 
-export const userLogout = () => apiClient("/auth/logout", { method: "POST" });
+export const userLogout = () => api<null>("/auth/logout", { method: "POST" });
 
 export const forgotPassword = (payload: { email: string }) =>
-  apiClient("/auth/forgot-password", { method: "POST", body: payload });
+  api<null>("/auth/forgot-password", { method: "POST", body: payload });
 
 export const resetPassword = (payload: { email: string; otp: string; newPassword: string }) =>
-  apiClient("/auth/reset-password", { method: "POST", body: payload });
+  api<null>("/auth/reset-password", { method: "POST", body: payload });
 
 export const googleOAuth = (payload: { idToken: string }) =>
-  apiClient("/auth/google", { method: "POST", body: payload });
+  api<AuthSession>("/auth/google", { method: "POST", body: payload });
