@@ -142,29 +142,29 @@ export const DashboardShell = ({ children }: { children: React.ReactNode }) => {
   );
 
   return (
-    <div className="min-h-screen bg-[#f5f7f6] text-[#17231f]">
+    <div className="min-h-screen bg-background text-foreground">
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-[270px] flex-col overflow-y-auto bg-[#0b1411] p-5 lg:flex">
         <div className="flex flex-1 flex-col">{sidebarContent}</div>
       </aside>
 
       <div className="lg:pl-[270px]">
-        <header className="sticky top-0 z-20 flex h-[72px] items-center justify-between border-b border-black/[0.06] bg-white/85 px-4 backdrop-blur-xl sm:px-6 lg:px-9">
+        <header className="sticky top-0 z-20 flex h-[72px] items-center justify-between border-b border-border/60 bg-background/85 px-4 backdrop-blur-xl sm:px-6 lg:px-9">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setOpen(true)}
               aria-label="Open navigation menu"
-              className="rounded-xl border border-black/10 p-2.5 transition hover:bg-black/5 lg:hidden"
+              className="rounded-xl border border-border p-2.5 transition hover:bg-accent/10 lg:hidden"
             >
               <Menu className="h-5 w-5" />
             </button>
 
             <div className="min-w-0">
-              <p className="truncate text-sm font-bold sm:text-base">
+              <p className="truncate text-sm font-bold text-foreground sm:text-base">
                 {activeItem ? t(activeItem.label) : "Dashboard"}
               </p>
 
-              <p className="hidden text-xs text-[#74817b] sm:block">
+              <p className="hidden text-xs text-muted sm:block">
                 Welcome back{user?.name ? `, ${user.name}` : ""}
               </p>
             </div>
@@ -172,7 +172,7 @@ export const DashboardShell = ({ children }: { children: React.ReactNode }) => {
 
           <Link
             href="/"
-            className="flex shrink-0 items-center gap-2 rounded-xl border border-black/10 bg-white px-3 py-2.5 text-xs font-semibold transition hover:border-emerald-500/40 hover:bg-emerald-50 sm:text-sm md:hidden"
+            className="flex shrink-0 items-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-xs font-semibold transition hover:border-emerald-500/40 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 sm:text-sm md:hidden"
           >
             <Home className="h-4 w-4" />
             <span>Home</span>

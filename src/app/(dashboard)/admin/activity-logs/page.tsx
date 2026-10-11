@@ -193,7 +193,7 @@ const ActivityLogsPage = () => {
               System activity
             </div>
 
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               {t("dash.activity")}
             </h1>
 
@@ -208,7 +208,7 @@ const ActivityLogsPage = () => {
               <FileText className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-2xl font-bold tabular-nums">
+              <p className="text-2xl font-bold tabular-nums text-white">
                 {isLoading ? "—" : logs.length}
               </p>
               <p className="text-xs text-white/50">Activities on this page</p>
@@ -220,7 +220,7 @@ const ActivityLogsPage = () => {
       <section className="rounded-2xl border border-line bg-card p-4 sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="font-semibold">Activity history</h2>
+            <h2 className="font-semibold text-foreground">Activity history</h2>
             <p className="mt-1 text-sm text-muted">
               Search for a type of activity to find relevant records.
             </p>
@@ -316,7 +316,7 @@ const ActivityLogsPage = () => {
 
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-semibold">{details.title}</h3>
+                        <h3 className="font-semibold text-foreground">{details.title}</h3>
                         <Badge tone={details.tone}>{formatLabel(log.action)}</Badge>
                       </div>
 
@@ -364,7 +364,7 @@ const ActivityLogsPage = () => {
                         <p className="text-xs font-medium text-muted">
                           Activity
                         </p>
-                        <p className="mt-2 break-words text-sm font-semibold">
+                        <p className="mt-2 break-words text-sm font-semibold text-foreground">
                           {formatLabel(log.action)}
                         </p>
                       </div>
@@ -373,7 +373,7 @@ const ActivityLogsPage = () => {
                         <p className="text-xs font-medium text-muted">
                           Performed by
                         </p>
-                        <p className="mt-2 break-words text-sm font-semibold">
+                        <p className="mt-2 break-words text-sm font-semibold text-foreground">
                           {log.actor?.name ?? "System"}
                         </p>
                         {log.actor?.role && (
@@ -387,7 +387,7 @@ const ActivityLogsPage = () => {
                         <p className="text-xs font-medium text-muted">
                           Related record
                         </p>
-                        <p className="mt-2 break-words text-sm font-semibold">
+                        <p className="mt-2 break-words text-sm font-semibold text-foreground">
                           {formatLabel(log.entity)}
                         </p>
                         {log.entityId && (
@@ -401,7 +401,7 @@ const ActivityLogsPage = () => {
                     {log.metadata &&
                       Object.keys(log.metadata).length > 0 && (
                         <div className="mt-4 rounded-xl border border-line bg-card p-4">
-                          <h4 className="mb-3 text-sm font-semibold">
+                          <h4 className="mb-3 text-sm font-semibold text-foreground">
                             Additional details
                           </h4>
 
@@ -415,7 +415,7 @@ const ActivityLogsPage = () => {
                                   <dt className="text-xs font-medium text-muted">
                                     {formatLabel(key)}
                                   </dt>
-                                  <dd className="mt-1 whitespace-pre-wrap break-words text-sm">
+                                  <dd className="mt-1 whitespace-pre-wrap break-words text-sm text-foreground">
                                     {formatValue(value)}
                                   </dd>
                                 </div>

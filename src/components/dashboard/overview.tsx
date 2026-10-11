@@ -16,7 +16,7 @@ const OverviewPage = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold tracking-tight">{t("dash.overview")}</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight text-foreground">{t("dash.overview")}</h1>
       {user?.role === "CUSTOMER" && <CustomerOverview />}
       {user?.role === "FIELD_TECHNICIAN" && <TechnicianOverview />}
       {(user?.role === "POWER_OPERATOR" || user?.role === "ADMIN") && <OperatorOverview />}
@@ -40,7 +40,7 @@ export const CustomerOverview = () => {
       </div>
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-card p-5">
         <div>
-          <p className="text-sm font-semibold">SLA Subscription</p>
+          <p className="text-sm font-semibold text-foreground">SLA Subscription</p>
           <p className="mt-1 text-xs text-muted">
             {s.sla?.slaActive
               ? `Active until ${format(new Date(s.sla.slaExpiryDate!), "d MMM yyyy")}`
@@ -90,7 +90,7 @@ export const OperatorOverview = () => {
         <div className="rounded-2xl border border-line bg-card p-5">
           <p className="text-xs font-semibold uppercase tracking-widest text-muted">{t("an.worstAreas")}</p>
           <div className="mt-4 flex items-center justify-between">
-            <span className="font-semibold">{heat.data.rows[0].areaName}</span>
+            <span className="font-semibold text-foreground">{heat.data.rows[0].areaName}</span>
             <span className="text-sm text-muted">{heat.data.rows[0].reportCount} reports / 30d</span>
           </div>
           <Link href="/operator/analytics" className="mt-3 inline-block text-sm font-medium text-primary hover:underline">

@@ -61,12 +61,33 @@ export interface OperationalStats {
 }
 
 export interface MyProfile {
-  serviceAddress?: string; thana?: string; city?: string; preferredLanguage?: string;
-  employeeId?: string | null; specialization?: string; experienceYears?: number | null;
-  certification?: string | null; phone?: string | null; shift?: string; designation?: string | null;
+  id: string;
+  userId: string;
+  serviceAddress?: string;
+  thana?: string;
+  city?: string;
+  preferredLanguage?: string;
+  employeeId?: string | null;
+  specialization?: string;
+  experienceYears?: number | null;
+  certification?: string | null;
+  phone?: string | null;
+  shift?: string;
+  designation?: string | null;
   applicationStatus?: "PENDING" | "APPROVED" | "REJECTED";
-  resumeUrl?: string | null; rejectionReason?: string | null;
+  resumeUrl?: string | null;
+  rejectionReason?: string | null;
   reviewedAt?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface MyProfileResponse {
+  success: boolean;
+  message: string;
+  data: {
+    profile: MyProfile;
+  };
 }
 
 export interface TechnicianApplication {

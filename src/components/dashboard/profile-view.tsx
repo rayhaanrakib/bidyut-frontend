@@ -1,7 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BadgeCheck, Camera, KeyRound, Pencil, ShieldAlert, X } from "lucide-react";
+import {
+  BadgeCheck,
+  Camera,
+  KeyRound,
+  Pencil,
+  ShieldAlert,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -10,8 +17,18 @@ import { z } from "zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
-import { useMyProfile, useUpdateMe, useUpdateMyImage, useUpdateMyProfile } from "@/hooks";
-import { imageSchema, nameSchema, profileSchema, roleDetailsSchema } from "@/validation";
+import {
+  useMyProfile,
+  useUpdateMe,
+  useUpdateMyImage,
+  useUpdateMyProfile,
+} from "@/hooks";
+import {
+  imageSchema,
+  nameSchema,
+  profileSchema,
+  roleDetailsSchema,
+} from "@/validation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -27,7 +44,7 @@ const ProfileView = () => {
   const { t } = useI18n();
   const qc = useQueryClient();
   const { data, isLoading } = useMyProfile();
-  const profile = data?.data ?? null;
+  const profile = data?.data.profile ?? null;
   const isCustomer = user?.role === "CUSTOMER";
   const isTechnician = user?.role === "FIELD_TECHNICIAN";
   const isOperator = user?.role === "POWER_OPERATOR";
@@ -55,7 +72,12 @@ const ProfileView = () => {
 
   const profileForm = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues: { serviceAddress: "", thana: "", city: "", preferredLanguage: "en" },
+    defaultValues: {
+      serviceAddress: "",
+      thana: "",
+      city: "",
+      preferredLanguage: "en",
+    },
   });
 
   const detailsForm = useForm<RoleDetailsValues>({
@@ -86,7 +108,8 @@ const ProfileView = () => {
   const updateMe = useUpdateMe();
   const updateImage = useUpdateMyImage();
   const update = useUpdateMyProfile();
-  const saving = updateMe.isPending || updateImage.isPending || update.isPending;
+  const saving =
+    updateMe.isPending || updateImage.isPending || update.isPending;
 
   const cancelEdit = () => {
     setEditing(false);
@@ -111,8 +134,17 @@ const ProfileView = () => {
       const nameValue = nameForm.getValues().name.trim();
       if (nameValue && nameValue !== (user?.name ?? "")) {
         const res = await updateMe.mutateAsync({ name: nameValue });
-        qc.setQueryData(["me"], (old: { success: boolean; message: string; data: { user: typeof res.data } } | undefined) =>
-          old ? { ...old, data: { user: res.data } } : old,
+        qc.setQueryData(
+          ["me"],
+          (
+            old:
+              | {
+                  success: boolean;
+                  message: string;
+                  data: { user: typeof res.data };
+                }
+              | undefined,
+          ) => (old ? { ...old, data: { user: res.data } } : old),
         );
       }
       if (isCustomer) {
@@ -121,7 +153,8 @@ const ProfileView = () => {
           serviceAddress: profile?.serviceAddress ?? "",
           thana: profile?.thana ?? "",
           city: profile?.city ?? "",
-          preferredLanguage: (profile?.preferredLanguage as "en" | "bn") ?? "en",
+          preferredLanguage:
+            (profile?.preferredLanguage as "en" | "bn") ?? "en",
         };
         if (
           v.serviceAddress !== original.serviceAddress ||
@@ -141,7 +174,10 @@ const ProfileView = () => {
         const v = detailsForm.getValues();
         let changed = false;
         const payload: Record<string, string> = {};
-        if (isTechnician && v.certification !== (profile?.certification ?? "")) {
+        if (
+          isTechnician &&
+          v.certification !== (profile?.certification ?? "")
+        ) {
           payload.certification = v.certification ?? "";
           changed = true;
         }
@@ -162,8 +198,25 @@ const ProfileView = () => {
         const form = new FormData();
         form.set("image", pendingPhoto);
         const res = await updateImage.mutateAsync(form);
-        qc.setQueryData(["me"], (old: { success: boolean; message: string; data: { user: { imageUrl?: string } } } | undefined) =>
-          old?.data?.user ? { ...old, data: { user: { ...old.data.user, imageUrl: res.data.imageUrl } } } : old,
+        qc.setQueryData(
+          ["me"],
+          (
+            old:
+              | {
+                  success: boolean;
+                  message: string;
+                  data: { user: { imageUrl?: string } };
+                }
+              | undefined,
+          ) =>
+            old?.data?.user
+              ? {
+                  ...old,
+                  data: {
+                    user: { ...old.data.user, imageUrl: res.data.imageUrl },
+                  },
+                }
+              : old,
         );
       }
       await Promise.all([
@@ -194,15 +247,20 @@ const ProfileView = () => {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <h1 className="text-2xl font-extrabold tracking-tight">{t("dash.profile")}</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
+        {t("dash.profile")}
+      </h1>
 
       {user?.mustChangePassword && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-500/40 bg-amber-500/10 px-5 py-4">
-          <p className="flex items-center gap-2 text-sm font-medium">
-            <ShieldAlert className="h-4 w-4 text-amber-600" /> {t("prof.mustChange")}
+          <p className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <ShieldAlert className="h-4 w-4 text-amber-600" />{" "}
+            {t("prof.mustChange")}
           </p>
           <Link href="/forgot-password">
-            <Button size="sm">{t("prof.changePassword")}</Button>
+            <Button variant="outline" size="sm">
+              {t("prof.changePassword")}
+            </Button>
           </Link>
         </div>
       )}
@@ -210,7 +268,11 @@ const ProfileView = () => {
       <div className="flex flex-wrap items-center gap-4 rounded-3xl border border-line bg-card p-6">
         <div className="relative">
           {avatarSrc ? (
-            <img src={avatarSrc} alt={user?.name ?? "Profile"} className="h-16 w-16 rounded-2xl object-cover" />
+            <img
+              src={avatarSrc}
+              alt={user?.name ?? "Profile"}
+              className="h-16 w-16 rounded-2xl object-cover"
+            />
           ) : (
             <span className="grid h-16 w-16 place-items-center rounded-2xl bg-primary text-xl font-bold text-primary-foreground">
               {user?.name?.[0]?.toUpperCase() ?? "B"}
@@ -251,9 +313,15 @@ const ProfileView = () => {
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-lg font-bold">{user?.name}</p>
-          <p className="truncate text-sm text-muted">{user?.email}</p>
-          {pendingPhoto && <p className="mt-1 text-xs text-muted">{t("acct.photoReady")}</p>}
+          <p className="text-lg font-bold text-foreground">{user?.name}</p>
+          <p className="truncate text-sm text-muted-foreground">
+            {user?.email}
+          </p>
+          {pendingPhoto && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("acct.photoReady")}
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Badge tone="blue">{user?.role}</Badge>
@@ -264,7 +332,11 @@ const ProfileView = () => {
             </Badge>
           )}
           {!editing && (
-            <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setEditing(true)}
+            >
               <Pencil className="mr-2 h-4 w-4" /> {t("acct.edit")}
             </Button>
           )}
@@ -273,7 +345,9 @@ const ProfileView = () => {
 
       {editing && (
         <div className="rounded-3xl border border-line bg-card p-6">
-          <p className="text-sm font-semibold">{t("acct.editTitle")}</p>
+          <p className="text-sm font-semibold text-foreground">
+            {t("acct.editTitle")}
+          </p>
           <p className="mt-1 text-xs text-muted">{t("acct.editingHint")}</p>
           <form
             onSubmit={(e) => {
@@ -286,67 +360,157 @@ const ProfileView = () => {
             <FieldGroup>
               <Field data-invalid={!!nameForm.formState.errors.name}>
                 <FieldLabel htmlFor="edit-name">{t("auth.name")}</FieldLabel>
-                <Input id="edit-name" aria-invalid={!!nameForm.formState.errors.name} {...nameForm.register("name")} />
+                <Input
+                  id="edit-name"
+                  aria-invalid={!!nameForm.formState.errors.name}
+                  {...nameForm.register("name")}
+                />
                 <FieldError message={nameForm.formState.errors.name?.message} />
               </Field>
 
               {isCustomer ? (
                 <>
-                  <Field data-invalid={!!profileForm.formState.errors.serviceAddress}>
-                    <FieldLabel htmlFor="edit-address">{t("prof.address")}</FieldLabel>
-                    <Input id="edit-address" aria-invalid={!!profileForm.formState.errors.serviceAddress} {...profileForm.register("serviceAddress")} />
-                    <FieldError message={profileForm.formState.errors.serviceAddress?.message} />
+                  <Field
+                    data-invalid={!!profileForm.formState.errors.serviceAddress}
+                  >
+                    <FieldLabel htmlFor="edit-address">
+                      {t("prof.address")}
+                    </FieldLabel>
+                    <Input
+                      id="edit-address"
+                      aria-invalid={
+                        !!profileForm.formState.errors.serviceAddress
+                      }
+                      {...profileForm.register("serviceAddress")}
+                    />
+                    <FieldError
+                      message={
+                        profileForm.formState.errors.serviceAddress?.message
+                      }
+                    />
                   </Field>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <Field data-invalid={!!profileForm.formState.errors.thana}>
-                      <FieldLabel htmlFor="edit-thana">{t("prof.thana")}</FieldLabel>
-                      <Input id="edit-thana" aria-invalid={!!profileForm.formState.errors.thana} {...profileForm.register("thana")} />
-                      <FieldError message={profileForm.formState.errors.thana?.message} />
+                      <FieldLabel htmlFor="edit-thana">
+                        {t("prof.thana")}
+                      </FieldLabel>
+                      <Input
+                        id="edit-thana"
+                        aria-invalid={!!profileForm.formState.errors.thana}
+                        {...profileForm.register("thana")}
+                      />
+                      <FieldError
+                        message={profileForm.formState.errors.thana?.message}
+                      />
                     </Field>
                     <Field data-invalid={!!profileForm.formState.errors.city}>
-                      <FieldLabel htmlFor="edit-city">{t("prof.city")}</FieldLabel>
-                      <Input id="edit-city" aria-invalid={!!profileForm.formState.errors.city} {...profileForm.register("city")} />
-                      <FieldError message={profileForm.formState.errors.city?.message} />
+                      <FieldLabel htmlFor="edit-city">
+                        {t("prof.city")}
+                      </FieldLabel>
+                      <Input
+                        id="edit-city"
+                        aria-invalid={!!profileForm.formState.errors.city}
+                        {...profileForm.register("city")}
+                      />
+                      <FieldError
+                        message={profileForm.formState.errors.city?.message}
+                      />
                     </Field>
                   </div>
-                  <Field data-invalid={!!profileForm.formState.errors.preferredLanguage}>
-                    <FieldLabel htmlFor="edit-language">{t("prof.language")}</FieldLabel>
-                    <Select id="edit-language" {...profileForm.register("preferredLanguage")}>
+                  <Field
+                    data-invalid={
+                      !!profileForm.formState.errors.preferredLanguage
+                    }
+                  >
+                    <FieldLabel htmlFor="edit-language">
+                      {t("prof.language")}
+                    </FieldLabel>
+                    <Select
+                      id="edit-language"
+                      {...profileForm.register("preferredLanguage")}
+                    >
                       <option value="en">English</option>
                       <option value="bn">বাংলা (Bangla)</option>
                     </Select>
-                    <FieldError message={profileForm.formState.errors.preferredLanguage?.message} />
+                    <FieldError
+                      message={
+                        profileForm.formState.errors.preferredLanguage?.message
+                      }
+                    />
                   </Field>
                 </>
               ) : (
                 <>
                   {isTechnician && (
-                    <Field data-invalid={!!detailsForm.formState.errors.certification}>
-                      <FieldLabel htmlFor="edit-certification">{t("prof.certification")}</FieldLabel>
-                      <Input id="edit-certification" aria-invalid={!!detailsForm.formState.errors.certification} {...detailsForm.register("certification")} />
-                      <FieldError message={detailsForm.formState.errors.certification?.message} />
+                    <Field
+                      data-invalid={
+                        !!detailsForm.formState.errors.certification
+                      }
+                    >
+                      <FieldLabel htmlFor="edit-certification">
+                        {t("prof.certification")}
+                      </FieldLabel>
+                      <Input
+                        id="edit-certification"
+                        aria-invalid={
+                          !!detailsForm.formState.errors.certification
+                        }
+                        {...detailsForm.register("certification")}
+                      />
+                      <FieldError
+                        message={
+                          detailsForm.formState.errors.certification?.message
+                        }
+                      />
                     </Field>
                   )}
                   {isOperator && (
                     <Field data-invalid={!!detailsForm.formState.errors.phone}>
-                      <FieldLabel htmlFor="edit-phone">{t("prof.phone")}</FieldLabel>
-                      <Input id="edit-phone" type="tel" aria-invalid={!!detailsForm.formState.errors.phone} {...detailsForm.register("phone")} />
-                      <FieldError message={detailsForm.formState.errors.phone?.message} />
+                      <FieldLabel htmlFor="edit-phone">
+                        {t("prof.phone")}
+                      </FieldLabel>
+                      <Input
+                        id="edit-phone"
+                        type="tel"
+                        aria-invalid={!!detailsForm.formState.errors.phone}
+                        {...detailsForm.register("phone")}
+                      />
+                      <FieldError
+                        message={detailsForm.formState.errors.phone?.message}
+                      />
                     </Field>
                   )}
                   {isAdmin && (
-                    <Field data-invalid={!!detailsForm.formState.errors.designation}>
-                      <FieldLabel htmlFor="edit-designation">{t("prof.designation")}</FieldLabel>
-                      <Input id="edit-designation" aria-invalid={!!detailsForm.formState.errors.designation} {...detailsForm.register("designation")} />
-                      <FieldError message={detailsForm.formState.errors.designation?.message} />
+                    <Field
+                      data-invalid={!!detailsForm.formState.errors.designation}
+                    >
+                      <FieldLabel htmlFor="edit-designation">
+                        {t("prof.designation")}
+                      </FieldLabel>
+                      <Input
+                        id="edit-designation"
+                        aria-invalid={
+                          !!detailsForm.formState.errors.designation
+                        }
+                        {...detailsForm.register("designation")}
+                      />
+                      <FieldError
+                        message={
+                          detailsForm.formState.errors.designation?.message
+                        }
+                      />
                     </Field>
                   )}
                 </>
               )}
 
               <div className="flex gap-2">
-                <Button type="submit" loading={saving}>{t("c.save")}</Button>
-                <Button type="button" variant="outline" onClick={cancelEdit}>{t("c.cancel")}</Button>
+                <Button type="submit" loading={saving}>
+                  {t("c.save")}
+                </Button>
+                <Button type="button" variant="outline" onClick={cancelEdit}>
+                  {t("c.cancel")}
+                </Button>
               </div>
             </FieldGroup>
           </form>
@@ -355,23 +519,41 @@ const ProfileView = () => {
 
       {isCustomer && !editing && (
         <div className="rounded-3xl border border-line bg-card p-6">
-          <p className="text-sm font-semibold">{t("prof.details")}</p>
+          <p className="text-sm font-semibold text-foreground">
+            {t("prof.details")}
+          </p>
           <div className="mt-4 grid gap-4 text-sm sm:grid-cols-2">
             <div className="rounded-2xl border border-line bg-surface p-4">
-              <p className="text-xs uppercase tracking-wider text-muted">{t("prof.address")}</p>
-              <p className="mt-1 font-semibold">{profile?.serviceAddress || "—"}</p>
+              <p className="text-xs uppercase tracking-wider text-muted">
+                {t("prof.address")}
+              </p>
+              <p className="mt-1 font-semibold text-foreground">
+                {profile?.serviceAddress || "—"}
+              </p>
             </div>
             <div className="rounded-2xl border border-line bg-surface p-4">
-              <p className="text-xs uppercase tracking-wider text-muted">{t("prof.thana")}</p>
-              <p className="mt-1 font-semibold">{profile?.thana || "—"}</p>
+              <p className="text-xs uppercase tracking-wider text-muted">
+                {t("prof.thana")}
+              </p>
+              <p className="mt-1 font-semibold text-foreground">
+                {profile?.thana || "—"}
+              </p>
             </div>
             <div className="rounded-2xl border border-line bg-surface p-4">
-              <p className="text-xs uppercase tracking-wider text-muted">{t("prof.city")}</p>
-              <p className="mt-1 font-semibold">{profile?.city || "—"}</p>
+              <p className="text-xs uppercase tracking-wider text-muted">
+                {t("prof.city")}
+              </p>
+              <p className="mt-1 font-semibold text-foreground">
+                {profile?.city || "—"}
+              </p>
             </div>
             <div className="rounded-2xl border border-line bg-surface p-4">
-              <p className="text-xs uppercase tracking-wider text-muted">{t("prof.language")}</p>
-              <p className="mt-1 font-semibold">{profile?.preferredLanguage === "bn" ? "বাংলা" : "English"}</p>
+              <p className="text-xs uppercase tracking-wider text-muted">
+                {t("prof.language")}
+              </p>
+              <p className="mt-1 font-semibold text-foreground">
+                {profile?.preferredLanguage === "bn" ? "বাংলা" : "English"}
+              </p>
             </div>
           </div>
         </div>
@@ -379,33 +561,55 @@ const ProfileView = () => {
 
       {!isCustomer && (
         <div className="rounded-3xl border border-line bg-card p-6">
-          <p className="text-sm font-semibold">{t("prof.employment")}</p>
+          <p className="text-sm font-semibold text-foreground">
+            {t("prof.employment")}
+          </p>
           <div className="mt-4 grid gap-4 text-sm sm:grid-cols-2">
             <div className="rounded-2xl border border-line bg-surface p-4">
-              <p className="text-xs uppercase tracking-wider text-muted">Employee ID</p>
-              <p className="mt-1 font-mono font-semibold">{profile?.employeeId ?? "—"}</p>
+              <p className="text-xs uppercase tracking-wider text-muted">
+                Employee ID
+              </p>
+              <p className="mt-1 font-mono font-semibold text-foreground">
+                {profile?.employeeId ?? "—"}
+              </p>
             </div>
             {isTechnician && (
               <>
                 <div className="rounded-2xl border border-line bg-surface p-4">
-                  <p className="text-xs uppercase tracking-wider text-muted">{t("prof.specialization")}</p>
-                  <p className="mt-1 font-semibold">{profile?.specialization ?? "—"}</p>
+                  <p className="text-xs uppercase tracking-wider text-muted">
+                    {t("prof.specialization")}
+                  </p>
+                  <p className="mt-1 font-semibold text-foreground">
+                    {profile?.specialization ?? "—"}
+                  </p>
                 </div>
                 <div className="rounded-2xl border border-line bg-surface p-4">
-                  <p className="text-xs uppercase tracking-wider text-muted">{t("prof.experienceYears")}</p>
-                  <p className="mt-1 font-semibold">{profile?.experienceYears ?? "—"}</p>
+                  <p className="text-xs uppercase tracking-wider text-muted">
+                    {t("prof.experienceYears")}
+                  </p>
+                  <p className="mt-1 font-semibold text-foreground">
+                    {profile?.experienceYears ?? "—"}
+                  </p>
                 </div>
               </>
             )}
             {profile?.shift && (
               <div className="rounded-2xl border border-line bg-surface p-4">
-                <p className="text-xs uppercase tracking-wider text-muted">{t("prof.shift")}</p>
-                <p className="mt-1 font-semibold">{profile.shift}</p>
+                <p className="text-xs uppercase tracking-wider text-muted">
+                  {t("prof.shift")}
+                </p>
+                <p className="mt-1 font-semibold text-foreground">
+                  {profile.shift}
+                </p>
               </div>
             )}
             <div className="rounded-2xl border border-line bg-surface p-4">
-              <p className="text-xs uppercase tracking-wider text-muted">{roleLabel}</p>
-              <p className="mt-1 font-semibold">{roleValue || "—"}</p>
+              <p className="text-xs uppercase tracking-wider text-muted">
+                {roleLabel}
+              </p>
+              <p className="mt-1 font-semibold text-foreground">
+                {roleValue || "—"}
+              </p>
             </div>
           </div>
           <p className="mt-4 text-xs text-muted">{t("prof.staffNote")}</p>
@@ -414,13 +618,18 @@ const ProfileView = () => {
 
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-line bg-card p-6">
         <div>
-          <p className="flex items-center gap-2 text-sm font-semibold">
-            <KeyRound className="h-4 w-4 text-primary" /> {t("prof.security")}
+          <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
+            <KeyRound className="h-4 w-4 text-foreground-500" />{" "}
+            {t("prof.security")}
           </p>
-          <p className="mt-1 text-xs text-muted">Password resets run through the verified email OTP flow.</p>
+          <p className="mt-1 text-xs text-muted">
+            Password resets run through the verified email OTP flow.
+          </p>
         </div>
         <Link href="/forgot-password">
-          <Button variant="outline" size="sm">{t("prof.changePassword")}</Button>
+          <Button variant="outline" size="sm">
+            {t("prof.changePassword")}
+          </Button>
         </Link>
       </div>
     </div>

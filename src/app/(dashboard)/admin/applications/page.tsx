@@ -40,7 +40,7 @@ const ApplicationsPage = () => {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-extrabold tracking-tight">Technician applications</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-foreground">Technician applications</h1>
         <div className="flex gap-2">
           {STATUSES.map((s) => (
             <Button key={s} size="sm" variant={status === s ? "default" : "outline"} onClick={() => { setStatus(s); setPage(1); }}>
@@ -66,7 +66,7 @@ const ApplicationsPage = () => {
             <tbody>
               {data?.data?.map((a) => (
                 <tr key={a.userId} className="border-t border-line">
-                  <td className="p-3"><span className="font-medium">{a.user.name}</span><br /><span className="text-xs text-muted">{a.user.email}</span></td>
+                  <td className="p-3"><span className="font-medium text-foreground">{a.user.name}</span><br /><span className="text-xs text-muted">{a.user.email}</span></td>
                   <td className="p-3">{a.specialization}</td>
                   <td className="p-3">{a.experienceYears ?? "—"}</td>
                   <td className="p-3 max-w-40 truncate">{a.certification ?? "—"}</td>

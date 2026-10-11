@@ -44,7 +44,7 @@ const ReportsView = () => {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-extrabold tracking-tight">{isTechnician ? t("dash.assignments") : t("dash.reports")}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-foreground">{isTechnician ? t("dash.assignments") : t("dash.reports")}</h1>
         <Select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="w-44" aria-label={t("th.status")}>
           <option value="">All statuses</option>
           {["PENDING", "ASSIGNED", "IN_PROGRESS", "RESOLVED", "CANCELLED"].map((s) => <option key={s} value={s}>{s}</option>)}

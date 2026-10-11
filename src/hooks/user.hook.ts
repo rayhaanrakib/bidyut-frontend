@@ -15,13 +15,18 @@ import {
   updateMyProfile,
 } from "@/api";
 
+
+import type { MyProfile, TechnicianApplication, User, MyProfileResponse } from "@/types";
+
 export const useMyProfile = () => {
-  return useQuery({
+  return useQuery<MyProfileResponse>({
     queryKey: ["my-profile"],
-    queryFn: () => myProfile(),
+    queryFn: myProfile,
     retry: false,
+    refetchOnMount: "always",
   });
 };
+
 
 export const useUpdateMyProfile = () => {
   const qc = useQueryClient();

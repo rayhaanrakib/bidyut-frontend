@@ -76,12 +76,12 @@ const SubstationsView = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">{t("dash.substations")}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-foreground">{t("dash.substations")}</h1>
         <p className="mt-1 text-sm text-muted">{meta ? `${meta.total} ${t("grid.total")}` : ""}</p>
       </div>
 
       <form onSubmit={submit} noValidate className="rounded-3xl border border-line bg-card p-6">
-        <p className="text-sm font-semibold">{editingId ? t("grid.edit") : t("grid.add")}</p>
+        <p className="text-sm font-semibold text-foreground">{editingId ? t("grid.edit") : t("grid.add")}</p>
         <FieldGroup>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field data-invalid={!!form.formState.errors.name}>
@@ -161,7 +161,7 @@ const SubstationsView = () => {
             <tbody>
               {rows.map((row) => (
                 <tr key={row.id} className="border-b border-line/60 last:border-0">
-                  <td className="px-5 py-3.5 font-medium">{row.name}</td>
+                  <td className="px-5 py-3.5 font-medium text-foreground">{row.name}</td>
                   <td className="px-5 py-3.5 text-muted">{zoneMap[row.zoneId] ?? "—"}</td>
                   <td className="px-5 py-3.5">
                     <div className="flex justify-end gap-2">

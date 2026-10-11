@@ -10,6 +10,8 @@ export const checkoutSession = (input: {
 export const myPayments = (page = 1) =>
   api<Payment[]>(`/payments/my-payments?page=${page}&limit=10`);
 
+//backend api success_url: `${config.server.frontendUrl}/payment/success?transactionId=${transactionId}`,
+
 export const paymentByTransaction = (transactionId: string) =>
   api<Payment>(`/payments/${transactionId}`);
 

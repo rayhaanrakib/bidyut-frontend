@@ -52,7 +52,7 @@ const ReportPage = () => {
 
   return (
     <div className="mx-auto max-w-xl">
-      <h1 className="text-2xl font-extrabold tracking-tight">Report an outage</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight text-foreground">Report an outage</h1>
 
       <ol className="mt-6 flex gap-2">
         {STEPS.map((label, i) => (
@@ -83,7 +83,7 @@ const ReportPage = () => {
       >
         {step === 0 && (
           <div>
-            <label className="block text-sm font-medium">
+            <label className="block text-sm font-medium text-foreground">
               Which area is affected?
               <Select className="mt-2 w-full" aria-invalid={!!errors.areaId} {...register("areaId")}>
                 <option value="">Select your area…</option>
@@ -97,14 +97,14 @@ const ReportPage = () => {
         {step === 1 && (
           <>
             <div>
-              <label className="block text-sm font-medium">
+              <label className="block text-sm font-medium text-foreground">
                 Short summary
                 <Input className="mt-2 w-full"  placeholder="e.g. Power cut since morning" aria-invalid={!!errors.title} {...register("title")} />
               </label>
               <FieldError message={errors.title?.message} />
             </div>
             <div>
-              <label className="block text-sm font-medium">
+              <label className="block text-sm font-medium text-foreground">
                 What exactly is happening?
                 <Textarea className="mt-2 w-full" rows={4}  placeholder="Street, landmark, since when…" aria-invalid={!!errors.description} {...register("description")} />
               </label>
@@ -115,9 +115,9 @@ const ReportPage = () => {
 
         {step === 2 && (
           <div className="space-y-2 rounded-2xl border border-line bg-surface p-4 text-sm">
-            <p><strong>Area:</strong> {areas.data?.data?.find((a) => a.id === getValues().areaId)?.name ?? "—"}</p>
-            <p><strong>Summary:</strong> {getValues().title}</p>
-            <p><strong>Details:</strong> {getValues().description}</p>
+            <p className="text-foreground"><strong>Area:</strong> {areas.data?.data?.find((a) => a.id === getValues().areaId)?.name ?? "—"}</p>
+            <p className="text-foreground"><strong>Summary:</strong> {getValues().title}</p>
+            <p className="text-foreground"><strong>Details:</strong> {getValues().description}</p>
             <Badge tone="amber">Will be submitted as PENDING</Badge>
           </div>
         )}

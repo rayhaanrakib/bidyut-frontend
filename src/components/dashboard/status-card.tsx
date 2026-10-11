@@ -35,7 +35,7 @@ export const LiveStatusCard = ({ areaId }: { areaId: string }) => {
     <div className="overflow-hidden rounded-3xl border border-line bg-card">
       <div className={`flex items-center justify-between px-6 py-5 ${status.loadSheddingNow ? "bg-danger/10" : "bg-emerald-500/10"}`}>
         <div>
-          <h2 className="text-xl font-bold tracking-tight">{status.area.name}</h2>
+          <h2 className="text-xl font-bold tracking-tight text-foreground">{status.area.name}</h2>
           <p className="mt-0.5 text-xs text-muted">
             {status.area.zone} → {status.area.substation} → {status.area.feeder}
           </p>
@@ -59,7 +59,7 @@ export const LiveStatusCard = ({ areaId }: { areaId: string }) => {
           </div>
           {status.nextScheduled ? (
             <div className="mt-2">
-              <p className="text-sm font-semibold leading-snug">{status.nextScheduled.title}</p>
+              <p className="text-sm font-semibold leading-snug text-foreground">{status.nextScheduled.title}</p>
               <Countdown to={status.nextScheduled.startsAt} prefix={`— ${t("countdown.in")}`} />
             </div>
           ) : (

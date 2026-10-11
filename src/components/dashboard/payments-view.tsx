@@ -34,7 +34,7 @@ const PaymentsView = () => {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-extrabold tracking-tight">{t("dash.payments")}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-foreground">{t("dash.payments")}</h1>
         {user?.role === "CUSTOMER" && (
           <Button onClick={buySla} loading={checkout.isPending}>{t("pay.buySla")}</Button>
         )}
@@ -42,7 +42,7 @@ const PaymentsView = () => {
 
       {isAdmin && (
         <div className="mt-6 rounded-2xl border border-line bg-card p-5">
-          <p className="text-sm font-semibold">{t("dash.refund")}</p>
+          <p className="text-sm font-semibold text-foreground">{t("dash.refund")}</p>
           <p className="mt-1 text-xs text-muted">Reverses the Stripe charge and undoes the side effects atomically (priority flag / SLA).</p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Input ref={refundInput} placeholder="TXN-…" className="max-w-xs font-mono" aria-label={t("th.transaction")} />
@@ -83,8 +83,8 @@ const PaymentsView = () => {
                 {data.data.map((p) => (
                   <tr key={p.id} className="border-b border-line/60 last:border-0 hover:bg-surface/50">
                     <td className="px-5 py-3.5 font-mono text-xs">{p.transactionId}</td>
-                    <td className="px-5 py-3.5">{p.type === "SLA_SUBSCRIPTION" ? "SLA (30d)" : "Priority pass"}</td>
-                    <td className="px-5 py-3.5 font-semibold">{formatBDT(p.amountPaisa)}</td>
+                    <td className="px-5 py-3.5 text-foreground">{p.type === "SLA_SUBSCRIPTION" ? "SLA (30d)" : "Priority pass"}</td>
+                    <td className="px-5 py-3.5 font-semibold text-foreground">{formatBDT(p.amountPaisa)}</td>
                     <td className="px-5 py-3.5"><Badge tone={statusTone(p.status)}>{p.status}</Badge></td>
                     <td className="px-5 py-3.5 text-muted">{format(new Date(p.createdAt), "d MMM, HH:mm")}</td>
                   </tr>

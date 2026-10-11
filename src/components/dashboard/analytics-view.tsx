@@ -15,7 +15,7 @@ const AnalyticsView = () => {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-extrabold tracking-tight">{t("dash.analytics")}</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight text-foreground">{t("dash.analytics")}</h1>
 
       {isLoading || !ops ? (
         <Skeleton className="h-36 w-full" />
@@ -32,7 +32,7 @@ const AnalyticsView = () => {
 
       <div className="rounded-3xl border border-line bg-card p-6">
         <div className="flex items-center justify-between">
-          <h2 className="font-semibold">🔥 {t("an.worstAreas")}</h2>
+        <h2 className="font-semibold text-foreground">🔥 {t("an.worstAreas")}</h2>
           <span className="text-xs text-muted">GET /analytics/heatmap?days=30</span>
         </div>
         <div className="mt-6 space-y-4">
@@ -41,7 +41,7 @@ const AnalyticsView = () => {
           {rows.map((r) => (
             <div key={r.areaId}>
               <div className="mb-1.5 flex items-center justify-between text-xs">
-                <span className="font-semibold">{r.areaName} <span className="font-normal text-muted">· {r.feederName}</span></span>
+                <span className="font-semibold text-foreground">{r.areaName} <span className="font-normal text-muted">· {r.feederName}</span></span>
                 <span className="text-muted">
                   {r.reportCount} reports{r.avgResolutionMinutes !== null ? ` · ${r.avgResolutionMinutes}m ${t("an.avgFix")}` : ""}
                 </span>

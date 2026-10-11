@@ -93,7 +93,7 @@ const UsersView = () => {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-extrabold tracking-tight">{t("dash.users")}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-foreground">{t("dash.users")}</h1>
         <div className="flex flex-wrap items-center gap-2">
           <Input
             value={searchInput} onChange={(e) => setSearchInput(e.target.value)}
@@ -125,7 +125,7 @@ const UsersView = () => {
             {data?.data?.map((u) => (
               <tr key={u.id} className="border-b border-line/60 last:border-0 hover:bg-surface/50">
                 <td className="px-5 py-3.5">
-                  <p className="font-semibold">{u.name}</p>
+                  <p className="font-semibold text-foreground">{u.name}</p>
                   <p className="text-xs text-muted">{u.email}</p>
                 </td>
                 <td className="px-5 py-3.5">

@@ -65,7 +65,7 @@ const OutagesView = () => {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-extrabold tracking-tight">
+          <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
           {t("dash.allOutages")}
         </h1>
         <div className="flex items-center gap-2">
@@ -163,7 +163,7 @@ const OutagesView = () => {
                 className="flex w-full items-center justify-between rounded-xl border border-line px-4 py-3 text-left text-sm transition hover:border-accent/50 hover:bg-surface"
               >
                 <span>
-                  <span className="font-semibold">{tech.name}</span>
+                  <span className="font-semibold text-foreground">{tech.name}</span>
                   <span className="ml-2 text-xs text-muted">{tech.email}</span>
                 </span>
                 <span className="text-xs font-semibold text-primary">

@@ -31,7 +31,7 @@ export const updateMe = (input: { name: string }) =>
 export const updateMyImage = (form: FormData) =>
   api<{ imageUrl: string; imagePublicId: string }>("/users/me/image", { method: "PATCH", form });
 
-export const myProfile = () => api<MyProfile>("/users/me/profile");
+export const myProfile = () => api<{ profile: MyProfile }>("/users/me/profile");
 
 export const updateMyProfile = (input: Partial<MyProfile>) =>
   api<MyProfile>("/users/me/profile", { method: "PATCH", body: input });

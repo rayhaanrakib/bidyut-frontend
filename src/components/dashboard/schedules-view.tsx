@@ -113,7 +113,7 @@ const SchedulesView = () => {
             <div key={s.id} className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-card p-5">
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="font-semibold">{s.title}</p>
+                  <p className="font-semibold text-foreground">{s.title}</p>
                   <Badge tone={s.type === "EMERGENCY" ? "red" : "blue"}>{s.type}</Badge>
                   <Badge tone={statusTone(s.status)}>{s.status}</Badge>
                 </div>
