@@ -261,7 +261,7 @@ const ApplyTechnicianMain = () => {
   return (
     <main className="min-h-screen overflow-hidden bg-background pb-16">
       <div className="mx-auto max-w-[1440px] px-4 pt-5 sm:px-6 lg:px-10 lg:pt-8">
-        <section className="relative isolate overflow-hidden rounded-[28px] bg-[#0b1411] text-white sm:rounded-[36px]">
+        <section className="relative isolate overflow-hidden rounded-[28px] bg-[#0b1411] text-white sm:rounded-[36px] mt-6">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute -right-20 -top-24 -z-10 h-80 w-80 rounded-full bg-emerald-400/20 blur-[100px] sm:h-[440px] sm:w-[440px]"
@@ -689,11 +689,6 @@ const ApplyTechnicianMain = () => {
             )}
           </div>
         </section>
-
-        <footer className="mt-16 flex flex-col gap-3 border-t border-border/70 pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-          <span className="font-bold tracking-[0.14em]">BIDYUT</span>
-          <span>Technician applications · Bangladesh</span>
-        </footer>
       </div>
     </main>
   );

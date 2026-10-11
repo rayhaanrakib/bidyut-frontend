@@ -1,14 +1,13 @@
 "use client";
 
 import { format } from "date-fns";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
-import { useCheckout, useMyPayments, useRefund } from "@/hooks";
+import { useCheckout, useMyPayments } from "@/hooks";
 import { Badge, statusTone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Skeleton, EmptyState } from "@/components/ui/misc";
 import { formatBDT } from "@/lib/utils";
 
@@ -18,9 +17,6 @@ const PaymentsView = () => {
   const [page, setPage] = useState(1);
   const { data, isLoading } = useMyPayments(page);
   const checkout = useCheckout();
-  const refund = useRefund();
-  const refundInput = useRef<HTMLInputElement>(null);
-  const isAdmin = user?.role === "ADMIN";
 
   const buySla = async () => {
     try {
@@ -68,28 +64,6 @@ const PaymentsView = () => {
                 {t("pay.buySla")}
               </Button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {isAdmin && (
-        <div className="mt-6 rounded-2xl border border-line bg-card p-5">
-          <p className="text-sm font-semibold text-foreground">{t("dash.refund")}</p>
-          <p className="mt-1 text-xs text-muted">Reverses the Stripe charge and undoes the side effects atomically (priority flag / SLA).</p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <Input ref={refundInput} placeholder="TXN-…" className="max-w-xs font-mono" aria-label={t("th.transaction")} />
-            <Button
-              variant="danger" size="md"
-              loading={refund.isPending}
-              onClick={async () => {
-                const txn = refundInput.current?.value.trim();
-                if (!txn) return toast.error("Enter a transaction ID");
-                try { await refund.mutateAsync(txn); toast.success("Refunded + side effects reversed"); if (refundInput.current) refundInput.current.value = ""; }
-                catch (err) { toast.error(err instanceof Error ? err.message : "Refund failed"); }
-              }}
-            >
-              Refund
-            </Button>
           </div>
         </div>
       )}

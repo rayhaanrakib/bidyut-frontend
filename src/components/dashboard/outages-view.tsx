@@ -48,24 +48,28 @@ const OutagesView = () => {
   });
 
   const [target, setTarget] = useState<OutageReport | null>(null);
+  const [assigningId, setAssigningId] = useState<string | null>(null);
   const technicians = useTechnicians();
   const assign = useAssignTechnician();
 
   const doAssign = async (technicianId: string) => {
     if (!target) return;
+    setAssigningId(technicianId);
     try {
       await assign.mutateAsync({ id: target.id, technicianId });
       toast.success("Technician assigned");
       setTarget(null);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Assign failed");
+    } finally {
+      setAssigningId(null);
     }
   };
 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
+        <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
           {t("dash.allOutages")}
         </h1>
         <div className="flex items-center gap-2">
@@ -156,20 +160,25 @@ const OutagesView = () => {
               </p>
             )}
             {technicians.data?.data?.map((tech) => (
-              <button
+              <div
                 key={tech.id}
-                onClick={() => doAssign(tech.id)}
-                disabled={assign.isPending}
-                className="flex w-full items-center justify-between rounded-xl border border-line px-4 py-3 text-left text-sm transition hover:border-accent/50 hover:bg-surface"
+                className="flex items-center justify-between rounded-xl border border-line bg-card p-4 transition-colors hover:border-accent/40"
               >
-                <span>
-                  <span className="font-semibold text-foreground">{tech.name}</span>
-                  <span className="ml-2 text-xs text-muted">{tech.email}</span>
-                </span>
-                <span className="text-xs font-semibold text-primary">
-                  {t("assign.button")} →
-                </span>
-              </button>
+                <div className="min-w-0 pr-4">
+                  <p className="truncate font-semibold text-foreground">{tech.name}</p>
+                  <p className="truncate text-xs text-muted">{tech.email}</p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  loading={assign.isPending && assigningId === tech.id}
+                  disabled={assign.isPending && assigningId !== tech.id}
+                  onClick={() => doAssign(tech.id)}
+                  className="cursor-pointer"
+                >
+                  {t("assign.button")}
+                </Button>
+              </div>
             ))}
           </div>
         )}

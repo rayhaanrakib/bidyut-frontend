@@ -3,28 +3,25 @@
 import { format } from "date-fns";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
-import { adminPayments } from "@/api";
+import { adminPayments, refund } from "@/api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { refund } from "@/api";
 import { Badge, statusTone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input, Select } from "@/components/ui/input";
+import { Select } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { Skeleton, EmptyState } from "@/components/ui/misc";
 import { formatBDT } from "@/lib/utils";
 import type { Payment } from "@/types";
 
 const AdminPaymentsPage = () => {
-  const { user } = useAuth();
   const { t } = useI18n();
   const qc = useQueryClient();
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("");
   const [type, setType] = useState("");
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
-  const [refundingId, setRefundingId] = useState<string | null>(null);
+  const [confirmRefund, setConfirmRefund] = useState<Payment | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-payments", page, status, type],
@@ -36,17 +33,13 @@ const AdminPaymentsPage = () => {
     onSuccess: () => {
       toast.success("Payment refunded successfully");
       qc.invalidateQueries({ queryKey: ["admin-payments"] });
-      setRefundingId(null);
+      setConfirmRefund(null);
       setSelectedPayment(null);
     },
     onError: (err) => {
       toast.error(err instanceof Error ? err.message : "Refund failed");
     },
   });
-
-  const handleRefund = async (transactionId: string) => {
-    await refundMutation.mutateAsync(transactionId);
-  };
 
   const payments = data?.data ?? [];
   const meta = data?.meta;
@@ -89,10 +82,8 @@ const AdminPaymentsPage = () => {
               <tr className="border-b border-line text-left text-xs uppercase tracking-wider text-muted">
                 <th className="px-5 py-3.5">Transaction ID</th>
                 <th className="px-5 py-3.5">Customer</th>
-                <th className="px-5 py-3.5">Amount (BDT)</th>
                 <th className="px-5 py-3.5">Type</th>
                 <th className="px-5 py-3.5">Status</th>
-                <th className="px-5 py-3.5">Date</th>
                 <th className="px-5 py-3.5">Actions</th>
               </tr>
             </thead>
@@ -100,16 +91,11 @@ const AdminPaymentsPage = () => {
               {payments.map((p) => (
                 <tr key={p.id} className="border-b border-line/60 last:border-0 hover:bg-surface/50">
                   <td className="px-5 py-3.5 font-mono text-xs">{p.transactionId}</td>
-                  <td className="px-5 py-3.5">
-                    <div className="text-foreground">{(p as any).user?.name ?? "—"}</div>
-                    <div className="text-xs text-muted">{(p as any).user?.email ?? ""}</div>
-                  </td>
-                  <td className="px-5 py-3.5 font-semibold text-foreground">{formatBDT(p.amountPaisa)}</td>
+                  <td className="px-5 py-3.5 text-foreground">{(p as any).user?.name ?? "—"}</td>
                   <td className="px-5 py-3.5 text-foreground">{p.type === "SLA_SUBSCRIPTION" ? "SLA (30d)" : "Priority"}</td>
                   <td className="px-5 py-3.5">
                     <Badge tone={statusTone(p.status)}>{p.status}</Badge>
                   </td>
-                  <td className="px-5 py-3.5 text-muted text-xs">{format(new Date(p.createdAt), "d MMM, HH:mm")}</td>
                   <td className="px-5 py-3.5">
                     <div className="flex gap-2">
                       <Button size="sm" variant="outline" onClick={() => setSelectedPayment(p)}>
@@ -120,8 +106,7 @@ const AdminPaymentsPage = () => {
                           size="sm"
                           variant="ghost"
                           className="text-amber-600 hover:text-amber-700"
-                          onClick={() => setRefundingId(p.id)}
-                          loading={refundMutation.isPending && refundingId === p.id}
+                          onClick={() => setConfirmRefund(p)}
                         >
                           Refund
                         </Button>
@@ -149,14 +134,16 @@ const AdminPaymentsPage = () => {
         </div>
       )}
 
+      {/* Details Modal */}
       <Modal open={Boolean(selectedPayment)} onClose={() => setSelectedPayment(null)} title="Payment Details">
         {selectedPayment && (
-          <div className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-lg border border-line bg-surface p-3">
-                <p className="text-xs uppercase tracking-wider text-muted">Transaction ID</p>
-                <p className="mt-2 font-mono text-sm font-semibold text-foreground">{selectedPayment.transactionId}</p>
-              </div>
+          <div className="max-h-96 space-y-3 overflow-y-auto">
+            <div className="rounded-lg border border-line bg-surface p-3">
+              <p className="text-xs uppercase tracking-wider text-muted">Transaction ID</p>
+              <p className="mt-2 break-all font-mono text-sm font-semibold text-foreground">{selectedPayment.transactionId}</p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
               <div className="rounded-lg border border-line bg-surface p-3">
                 <p className="text-xs uppercase tracking-wider text-muted">Amount</p>
                 <p className="mt-2 text-sm font-semibold text-foreground">{formatBDT(selectedPayment.amountPaisa)}</p>
@@ -164,7 +151,7 @@ const AdminPaymentsPage = () => {
               <div className="rounded-lg border border-line bg-surface p-3">
                 <p className="text-xs uppercase tracking-wider text-muted">Type</p>
                 <p className="mt-2 text-sm font-semibold text-foreground">
-                  {selectedPayment.type === "SLA_SUBSCRIPTION" ? "SLA Subscription (30 days)" : "Priority Restoration"}
+                  {selectedPayment.type === "SLA_SUBSCRIPTION" ? "SLA Subscription" : "Priority Restoration"}
                 </p>
               </div>
               <div className="rounded-lg border border-line bg-surface p-3">
@@ -177,45 +164,49 @@ const AdminPaymentsPage = () => {
                 <p className="text-xs uppercase tracking-wider text-muted">Created</p>
                 <p className="mt-2 text-sm text-foreground">{format(new Date(selectedPayment.createdAt), "d MMM yyyy, HH:mm")}</p>
               </div>
-              <div className="rounded-lg border border-line bg-surface p-3">
-                <p className="text-xs uppercase tracking-wider text-muted">Customer</p>
-                <p className="mt-2 text-sm text-foreground">{(selectedPayment as any).user?.name ?? "—"}</p>
-                <p className="text-xs text-muted">{(selectedPayment as any).user?.email ?? ""}</p>
-              </div>
             </div>
 
-            {selectedPayment.status === "COMPLETED" && (
-              <div className="mt-4 flex justify-end gap-2">
-                <Button variant="outline" size="sm" onClick={() => setSelectedPayment(null)}>
-                  Close
-                </Button>
+            <div className="rounded-lg border border-line bg-surface p-3">
+              <p className="text-xs uppercase tracking-wider text-muted">Customer</p>
+              <p className="mt-2 break-all text-sm font-semibold text-foreground">{(selectedPayment as any).user?.name ?? "—"}</p>
+              <p className="mt-1 break-all text-xs text-muted">{(selectedPayment as any).user?.email ?? ""}</p>
+            </div>
+
+            <div className="mt-4 flex justify-end gap-2 border-t border-line pt-4">
+              <Button variant="outline" size="sm" onClick={() => setSelectedPayment(null)}>
+                Close
+              </Button>
+              {selectedPayment.status === "COMPLETED" && (
                 <Button
                   variant="outline"
                   className="text-amber-600 hover:text-amber-700"
                   size="sm"
-                  loading={refundMutation.isPending}
                   onClick={() => {
-                    handleRefund(selectedPayment.transactionId);
+                    setSelectedPayment(null);
+                    setConfirmRefund(selectedPayment);
                   }}
                 >
                   Refund Payment
                 </Button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
       </Modal>
 
-      <Modal open={Boolean(refundingId)} onClose={() => setRefundingId(null)} title="Confirm Refund">
-        {refundingId && selectedPayment?.id === refundingId && (
+      {/* Refund Confirmation Modal */}
+      <Modal open={Boolean(confirmRefund)} onClose={() => setConfirmRefund(null)} title="Confirm Refund">
+        {confirmRefund && (
           <div className="space-y-4">
-            <p className="text-sm text-muted">
-              Are you sure you want to refund <span className="font-semibold text-foreground">{formatBDT(selectedPayment.amountPaisa)}</span> to{" "}
-              <span className="font-semibold text-foreground">{(selectedPayment as any).user?.name}</span>?
-            </p>
-            <p className="text-xs text-muted">This action will reverse the charge and undo side effects (priority flag / SLA status).</p>
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4">
+              <p className="text-sm text-muted">
+                Refund <span className="font-semibold text-foreground">{formatBDT(confirmRefund.amountPaisa)}</span> to{" "}
+                <span className="font-semibold text-foreground">{(confirmRefund as any).user?.name}</span>?
+              </p>
+              <p className="mt-3 text-xs text-muted">This action will reverse the charge and undo side effects (priority flag / SLA status).</p>
+            </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" size="sm" onClick={() => setRefundingId(null)}>
+              <Button variant="outline" size="sm" onClick={() => setConfirmRefund(null)}>
                 Cancel
               </Button>
               <Button
@@ -223,9 +214,7 @@ const AdminPaymentsPage = () => {
                 size="sm"
                 loading={refundMutation.isPending}
                 onClick={() => {
-                  if (selectedPayment) {
-                    handleRefund(selectedPayment.transactionId);
-                  }
+                  refundMutation.mutate(confirmRefund.transactionId);
                 }}
               >
                 Confirm Refund
