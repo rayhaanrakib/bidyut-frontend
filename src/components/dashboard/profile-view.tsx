@@ -128,8 +128,17 @@ const ProfileView = () => {
   };
 
   const save = async () => {
-    const ok = await nameForm.trigger();
-    if (!ok) return;
+    const nameOk = await nameForm.trigger();
+    if (!nameOk) return;
+
+    if (isCustomer) {
+      const profileOk = await profileForm.trigger();
+      if (!profileOk) return;
+    } else {
+      const detailsOk = await detailsForm.trigger();
+      if (!detailsOk) return;
+    }
+
     try {
       const nameValue = nameForm.getValues().name.trim();
       if (nameValue && nameValue !== (user?.name ?? "")) {

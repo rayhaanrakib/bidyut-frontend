@@ -10,7 +10,16 @@ export const checkoutSession = (input: {
 export const myPayments = (page = 1) =>
   api<Payment[]>(`/payments/my-payments?page=${page}&limit=10`);
 
-//backend api success_url: `${config.server.frontendUrl}/payment/success?transactionId=${transactionId}`,
+export const adminPayments = (filters: { page?: number; limit?: number; status?: string; type?: string; sortBy?: string; sortOrder?: string } = {}) => {
+  const params = new URLSearchParams();
+  if (filters.page) params.set("page", String(filters.page));
+  if (filters.limit) params.set("limit", String(filters.limit));
+  if (filters.status) params.set("status", filters.status);
+  if (filters.type) params.set("type", filters.type);
+  if (filters.sortBy) params.set("sortBy", filters.sortBy);
+  if (filters.sortOrder) params.set("sortOrder", filters.sortOrder);
+  return api<Payment[]>(`/payments/all?${params.toString()}`);
+};
 
 export const paymentByTransaction = (transactionId: string) =>
   api<Payment>(`/payments/${transactionId}`);

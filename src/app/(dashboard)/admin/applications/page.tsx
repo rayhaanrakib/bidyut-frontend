@@ -19,10 +19,13 @@ const ApplicationsPage = () => {
   const { data, isLoading } = useTechnicianApplications(status, page);
   const decide = useDecideApplication();
 
+  const [approving, setApproving] = useState<TechnicianApplication | null>(null);
   const [rejecting, setRejecting] = useState<TechnicianApplication | null>(null);
   const [reason, setReason] = useState("");
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   const act = async (userId: string, applicationStatus: "APPROVED" | "REJECTED", rejectionReason?: string) => {
+    setProcessingId(userId);
     try {
       await decide.mutateAsync({ userId, applicationStatus, rejectionReason });
       toast.success(
@@ -30,10 +33,13 @@ const ApplicationsPage = () => {
           ? "Approved — the account is now FIELD_TECHNICIAN"
           : "Application rejected — the applicant can re-apply",
       );
+      setApproving(null);
       setRejecting(null);
       setReason("");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Decision failed");
+    } finally {
+      setProcessingId(null);
     }
   };
 
@@ -75,8 +81,22 @@ const ApplicationsPage = () => {
                   <td className="p-3">
                     {a.applicationStatus === "PENDING" && (
                       <div className="flex gap-2">
-                        <Button size="sm" loading={decide.isPending} onClick={() => act(a.userId, "APPROVED")}><Check className="mr-1 h-3.5 w-3.5" /> Approve</Button>
-                        <Button size="sm" variant="outline" className="text-danger" onClick={() => { setRejecting(a); setReason(""); }}><X className="mr-1 h-3.5 w-3.5" /> Reject</Button>
+                        <Button
+                          size="sm"
+                          disabled={decide.isPending && processingId !== null}
+                          onClick={() => setApproving(a)}
+                        >
+                          <Check className="mr-1 h-3.5 w-3.5" /> Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="text-danger"
+                          disabled={decide.isPending && processingId !== null}
+                          onClick={() => { setRejecting(a); setReason(""); }}
+                        >
+                          <X className="mr-1 h-3.5 w-3.5" /> Reject
+                        </Button>
                       </div>
                     )}
                     {a.applicationStatus !== "PENDING" && <span className="text-xs text-muted">{a.reviewedAt?.slice(0, 10)}</span>}
@@ -96,8 +116,26 @@ const ApplicationsPage = () => {
         </div>
       )}
 
+      <Modal open={Boolean(approving)} onClose={() => setApproving(null)} title="Approve technician application?">
+        <p className="text-sm text-muted">
+          Approve <span className="font-semibold text-foreground">{approving?.user.name}</span> ({approving?.specialization})? Their account role will immediately switch to FIELD_TECHNICIAN.
+        </p>
+        <div className="mt-4 flex justify-end gap-2">
+          <Button variant="outline" size="sm" onClick={() => setApproving(null)}>Cancel</Button>
+          <Button
+            size="sm"
+            loading={decide.isPending && processingId === approving?.userId}
+            onClick={() => approving && act(approving.userId, "APPROVED")}
+          >
+            Confirm Approval
+          </Button>
+        </div>
+      </Modal>
+
       <Modal open={Boolean(rejecting)} onClose={() => setRejecting(null)} title="Reject this application?">
-        <p className="text-sm text-muted">The applicant sees this reason in their email — and can re-apply afterwards.</p>
+        <p className="text-sm text-muted">
+          Reject application for <span className="font-semibold text-foreground">{rejecting?.user.name}</span>? The applicant sees this reason in their email — and can re-apply afterwards.
+        </p>
         <textarea
           value={reason}
           onChange={(e) => setReason(e.target.value)}
@@ -107,8 +145,14 @@ const ApplicationsPage = () => {
         />
         <div className="mt-4 flex justify-end gap-2">
           <Button variant="outline" size="sm" onClick={() => setRejecting(null)}>Cancel</Button>
-          <Button size="sm" variant="outline" className="text-danger" disabled={reason.trim().length < 4} loading={decide.isPending}
-            onClick={() => rejecting && act(rejecting.userId, "REJECTED", reason.trim())}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="text-danger"
+            disabled={reason.trim().length < 4 || (decide.isPending && processingId === rejecting?.userId)}
+            loading={decide.isPending && processingId === rejecting?.userId}
+            onClick={() => rejecting && act(rejecting.userId, "REJECTED", reason.trim())}
+          >
             Reject with reason
           </Button>
         </div>

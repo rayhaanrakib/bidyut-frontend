@@ -65,14 +65,18 @@ export const profileSchema = z.object({
   preferredLanguage: z.enum(["en", "bn"]),
 });
 
-
 export const nameSchema = z.object({
   name: z.string().min(2, "Tell us your name").max(60),
 });
 
 export const roleDetailsSchema = z.object({
   certification: z.string().max(120).optional(),
-  phone: z.string().max(20).optional(),
+  phone: z
+    .string()
+    .optional()
+    .refine((v) => !v || /^\d{11}$/.test(v), {
+      message: "Phone number must be exactly 11 digits",
+    }),
   designation: z.string().max(60).optional(),
 });
 
