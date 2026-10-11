@@ -35,10 +35,42 @@ const PaymentsView = () => {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-extrabold tracking-tight text-foreground">{t("dash.payments")}</h1>
-        {user?.role === "CUSTOMER" && (
-          <Button onClick={buySla} loading={checkout.isPending}>{t("pay.buySla")}</Button>
-        )}
       </div>
+
+      {user?.role === "CUSTOMER" && !user?.slaActive && (
+        <div className="mt-6 rounded-3xl border border-emerald-500/30 bg-emerald-500/10 p-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground">Upgrade to SLA Subscription</h2>
+              <p className="mt-2 text-sm text-muted">Get priority support and guaranteed response times for your outage reports.</p>
+              <ul className="mt-4 space-y-2 text-sm text-foreground">
+                <li className="flex items-center gap-2">
+                  <span className="text-emerald-500">✓</span> Priority outage resolution
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-emerald-500">✓</span> Guaranteed 2-hour response time
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-emerald-500">✓</span> Dedicated support channel
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-emerald-500">✓</span> SLA breach compensation
+                </li>
+              </ul>
+            </div>
+            <div className="flex flex-col justify-between rounded-2xl border border-emerald-500/30 bg-background p-5">
+              <div>
+                <p className="text-xs uppercase tracking-wider text-muted">Monthly subscription</p>
+                <p className="mt-2 text-3xl font-bold text-foreground">৳499</p>
+                <p className="mt-1 text-xs text-muted">30 days of priority support</p>
+              </div>
+              <Button onClick={buySla} loading={checkout.isPending} className="mt-4 w-full">
+                {t("pay.buySla")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isAdmin && (
         <div className="mt-6 rounded-2xl border border-line bg-card p-5">
