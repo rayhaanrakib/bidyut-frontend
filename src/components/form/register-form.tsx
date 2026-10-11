@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -26,7 +27,39 @@ const CATEGORY_LABELS: Record<(typeof CATEGORIES)[number], DictKey> = {
 
 type RegisterValues = z.infer<typeof registerSchema>;
 
-export const RegisterForm = () => {
+const RegisterFormSkeleton = () => {
+  return (
+    <div className="flex flex-col gap-5 animate-pulse">
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <div className="h-4 w-12 rounded bg-neutral-200/50 dark:bg-neutral-800/50" />
+          <div className="h-10 w-full rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+        </div>
+
+        <div className="space-y-2">
+          <div className="h-4 w-10 rounded bg-neutral-200/50 dark:bg-neutral-800/50" />
+          <div className="h-10 w-full rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+        </div>
+
+        <div className="space-y-2">
+          <div className="h-4 w-16 rounded bg-neutral-200/50 dark:bg-neutral-800/50" />
+          <div className="h-10 w-full rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+        </div>
+
+        <div className="space-y-2">
+          <div className="h-4 w-16 rounded bg-neutral-200/50 dark:bg-neutral-800/50" />
+          <div className="h-10 w-full rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+        </div>
+
+        <div className="h-10 w-full rounded-md bg-neutral-200/40 dark:bg-neutral-800/40" />
+      </div>
+
+      <div className="mx-auto h-4 w-44 rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+    </div>
+  );
+};
+
+const RegisterFormMain = () => {
   const router = useRouter();
   const { t } = useI18n();
   const registerUser = useRegistration();
@@ -85,5 +118,13 @@ export const RegisterForm = () => {
         <Link href="/login" className="ml-1 font-medium text-primary underline-offset-4 hover:underline">{t("auth.toLogin")}</Link>
       </p>
     </div>
+  );
+};
+
+export const RegisterForm = () => {
+  return (
+    <Suspense fallback={<RegisterFormSkeleton />}>
+      <RegisterFormMain />
+    </Suspense>
   );
 };

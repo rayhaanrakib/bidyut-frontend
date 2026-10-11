@@ -1,6 +1,6 @@
-
 "use client";
 
+import { Suspense } from "react";
 import { motion } from "framer-motion";
 import { Zap, ShieldCheck, Activity, ArrowUpRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
@@ -32,7 +32,96 @@ const infrastructureImages = [
   },
 ];
 
-export const AboutContent = () => {
+const AboutSkeleton = () => {
+  return (
+    <main className="container mx-auto min-h-screen px-8 py-16 sm:py-24">
+      <section className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div>
+          <div className="mb-5 h-9 w-72 animate-pulse rounded-full bg-neutral-200/50 dark:bg-neutral-800/50" />
+
+          <div className="space-y-3.5">
+            <div className="h-10 w-full animate-pulse rounded-xl bg-neutral-200/50 dark:bg-neutral-800/50 sm:h-12 lg:h-14 lg:w-11/12" />
+            <div className="h-10 w-4/5 animate-pulse rounded-xl bg-neutral-200/50 dark:bg-neutral-800/50 sm:h-12 lg:h-14" />
+          </div>
+
+          <div className="mt-6 space-y-2.5 max-w-xl">
+            <div className="h-4 w-full animate-pulse rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+            <div className="h-4 w-11/12 animate-pulse rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+            <div className="h-4 w-5/6 animate-pulse rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+          </div>
+
+          <div className="mt-4 space-y-2.5 max-w-xl">
+            <div className="h-4 w-full animate-pulse rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+            <div className="h-4 w-4/5 animate-pulse rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-4">
+            <div className="flex h-[78px] w-64 items-center gap-3 rounded-xl border border-line bg-surface p-4">
+              <div className="h-11 w-11 animate-pulse rounded-lg bg-neutral-200/40 dark:bg-neutral-800/40" />
+              <div className="space-y-2 flex-1">
+                <div className="h-4 w-32 animate-pulse rounded bg-neutral-200/40 dark:bg-neutral-800/40" />
+                <div className="h-3 w-40 animate-pulse rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+              </div>
+            </div>
+
+            <div className="flex h-[78px] w-64 items-center gap-3 rounded-xl border border-line bg-surface p-4">
+              <div className="h-11 w-11 animate-pulse rounded-lg bg-neutral-200/40 dark:bg-neutral-800/40" />
+              <div className="space-y-2 flex-1">
+                <div className="h-4 w-36 animate-pulse rounded bg-neutral-200/40 dark:bg-neutral-800/40" />
+                <div className="h-3 w-36 animate-pulse rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative">
+          <div className="absolute -inset-4 -z-10 rounded-3xl bg-emerald-500/10 blur-2xl" />
+
+          <div className="grid auto-rows-[190px] grid-cols-1 gap-4 sm:grid-cols-2 md:auto-rows-[200px]">
+            <div className="relative overflow-hidden rounded-2xl border border-line bg-neutral-200/20 dark:bg-neutral-800/20 md:col-span-2 md:row-span-2 animate-pulse">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 space-y-3">
+                <div className="h-5 w-48 rounded bg-white/10" />
+                <div className="h-4 w-80 rounded bg-white/10" />
+              </div>
+            </div>
+
+            <div className="relative overflow-hidden rounded-2xl border border-line bg-neutral-200/20 dark:bg-neutral-800/20 animate-pulse">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5 space-y-2">
+                <div className="h-4.5 w-36 rounded bg-white/10" />
+                <div className="h-3.5 w-44 rounded bg-white/10" />
+              </div>
+            </div>
+
+            <div className="relative overflow-hidden rounded-2xl border border-line bg-neutral-200/20 dark:bg-neutral-800/20 animate-pulse">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5 space-y-2">
+                <div className="h-4.5 w-32 rounded bg-white/10" />
+                <div className="h-3.5 w-40 rounded bg-white/10" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-20 border-t border-line pt-10 sm:mt-28 sm:pt-14">
+        <div className="max-w-2xl">
+          <div className="h-4.5 w-28 animate-pulse rounded bg-neutral-200/40 dark:bg-neutral-800/40" />
+          <div className="mt-3 h-8 w-full animate-pulse rounded-lg bg-neutral-200/50 dark:bg-neutral-800/50 sm:h-10 sm:w-5/6" />
+
+          <div className="mt-5 space-y-2.5">
+            <div className="h-4 w-full animate-pulse rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+            <div className="h-4 w-11/12 animate-pulse rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+            <div className="h-4 w-4/5 animate-pulse rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+};
+
+const AboutMain = () => {
   const { t } = useI18n();
 
   return (
@@ -148,5 +237,13 @@ export const AboutContent = () => {
         </div>
       </section>
     </main>
+  );
+};
+
+export const AboutContent = () => {
+  return (
+    <Suspense fallback={<AboutSkeleton />}>
+      <AboutMain />
+    </Suspense>
   );
 };

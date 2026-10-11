@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -12,7 +13,6 @@ import {
 import Link from "next/link";
 import { toast, Toaster } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,70 @@ const ROUTES: Record<string, RouteItem[]> = {
   ADMIN: adminRoutes,
 };
 
-export const DashboardShell = ({ children }: { children: React.ReactNode }) => {
+const DashboardShellSkeleton = () => {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[270px] flex-col overflow-y-auto bg-[#0b1411] p-5 lg:flex animate-pulse">
+        <div className="flex flex-1 flex-col">
+          <div className="mb-10 flex items-center gap-3 px-2">
+            <div className="h-11 w-11 rounded-2xl bg-white/10" />
+            <div className="space-y-1.5">
+              <div className="h-4 w-20 rounded bg-white/10" />
+              <div className="h-2.5 w-28 rounded bg-white/5" />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="mb-3 h-3 w-16 px-3 rounded bg-white/5" />
+            {[1, 2, 3, 4, 5].map((item) => (
+              <div
+                key={item}
+                className="h-11 w-full rounded-xl bg-white/[0.04]"
+              />
+            ))}
+          </div>
+
+          <div className="mt-auto pt-8 space-y-4">
+            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+              <div className="h-10 w-10 rounded-xl bg-white/10" />
+              <div className="space-y-1.5 flex-1">
+                <div className="h-3.5 w-24 rounded bg-white/10" />
+                <div className="h-2.5 w-16 rounded bg-white/5" />
+              </div>
+            </div>
+
+            <div className="border-t border-white/10 pt-4">
+              <div className="h-11 w-full rounded-xl bg-white/[0.04]" />
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div className="lg:pl-[270px]">
+        <header className="sticky top-0 z-20 flex h-[72px] items-center justify-between border-b border-border/60 bg-background/85 px-4 backdrop-blur-xl sm:px-6 lg:px-9 animate-pulse">
+          <div className="space-y-1.5">
+            <div className="h-4 w-32 rounded bg-neutral-200/50 dark:bg-neutral-800/50" />
+            <div className="h-3 w-40 rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+          </div>
+        </header>
+
+        <main className="mx-auto min-h-[calc(100vh-72px)] w-full max-w-[1600px] p-4 sm:p-6 lg:p-9 animate-pulse">
+          <div className="space-y-6">
+            <div className="h-32 w-full rounded-3xl border border-border/70 bg-card/50" />
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-28 rounded-3xl border border-border/70 bg-card/50" />
+              ))}
+            </div>
+            <div className="h-80 w-full rounded-3xl border border-border/70 bg-card/50" />
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+const DashboardShellMain = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
   const { t } = useI18n();
   const pathname = usePathname();
@@ -49,7 +112,6 @@ export const DashboardShell = ({ children }: { children: React.ReactNode }) => {
         (item.url !== "/" && pathname.startsWith(`${item.url}/`)),
     )
     .sort((a, b) => b.url.length - a.url.length)[0];
-
 
   const navigation = (
     <nav className="space-y-1">
@@ -225,5 +287,13 @@ export const DashboardShell = ({ children }: { children: React.ReactNode }) => {
         )}
       </AnimatePresence>
     </div>
+  );
+};
+
+export const DashboardShell = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Suspense fallback={<DashboardShellSkeleton />}>
+      <DashboardShellMain>{children}</DashboardShellMain>
+    </Suspense>
   );
 };

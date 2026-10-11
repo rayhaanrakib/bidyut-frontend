@@ -1,9 +1,9 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { toast } from "sonner";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,7 +19,19 @@ import { forgotSchema, resetSchema } from "@/validation";
 type ForgotValues = z.infer<typeof forgotSchema>;
 type ResetValues = z.infer<typeof resetSchema>;
 
-export const ForgotForm = () => {
+const ForgotFormSkeleton = () => {
+  return (
+    <div className="flex flex-col gap-5 animate-pulse">
+      <div className="space-y-2">
+        <div className="h-4 w-12 rounded bg-neutral-200/50 dark:bg-neutral-800/50" />
+        <div className="h-10 w-full rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+      </div>
+      <div className="h-10 w-full rounded-md bg-neutral-200/40 dark:bg-neutral-800/40" />
+    </div>
+  );
+};
+
+const ForgotFormMain = () => {
   const router = useRouter();
   const { t } = useI18n();
   const [email, setEmail] = useState("");
@@ -106,5 +118,13 @@ export const ForgotForm = () => {
 
       <Button type="submit" loading={reset.isPending}>{t("auth.forgot.reset")}</Button>
     </form>
+  );
+};
+
+export const ForgotForm = () => {
+  return (
+    <Suspense fallback={<ForgotFormSkeleton />}>
+      <ForgotFormMain />
+    </Suspense>
   );
 };

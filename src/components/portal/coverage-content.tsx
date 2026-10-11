@@ -1,8 +1,8 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import { ArrowRight, Lock, MapPin } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { useAreaList, useFeederList, useSubstationList, useZoneList } from "@/hooks";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
@@ -10,7 +10,79 @@ import { DISTRICTS } from "@/lib/districts";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/input";
 
-const CoverageContent = () => {
+const CoverageSkeleton = () => {
+  return (
+    <main className="relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[480px] bg-gradient-to-b from-primary/10 to-transparent" />
+      <div className="pointer-events-none absolute left-1/2 top-24 -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-primary/15 blur-[120px]" />
+
+      <section className="mx-auto max-w-6xl px-4 pb-16 pt-32 text-center sm:px-6 animate-pulse">
+        <div className="mx-auto h-4 w-32 rounded bg-neutral-200/40 dark:bg-neutral-800/40" />
+        <div className="mx-auto mt-6 h-12 max-w-2xl rounded-xl bg-neutral-200/50 dark:bg-neutral-800/50 sm:h-16" />
+        <div className="mx-auto mt-6 space-y-2 max-w-xl">
+          <div className="h-4 w-full rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+          <div className="h-4 w-5/6 rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+        </div>
+        <div className="mt-8 flex items-center justify-center gap-3">
+          <div className="h-10 w-36 rounded-md bg-neutral-200/40 dark:bg-neutral-800/40" />
+          <div className="h-10 w-28 rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+        <div className="rounded-[2rem] border border-line bg-card p-6 sm:p-10 space-y-8">
+          <div className="flex flex-wrap items-center justify-between gap-3 animate-pulse">
+            <div className="h-8 w-48 rounded-lg bg-neutral-200/50 dark:bg-neutral-800/50" />
+            <div className="h-4 w-32 rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3 animate-pulse">
+            <div className="h-10 w-full rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+            <div className="h-10 w-full rounded-md bg-neutral-200/20 dark:bg-neutral-800/20" />
+            <div className="h-10 w-full rounded-md bg-neutral-200/20 dark:bg-neutral-800/20" />
+          </div>
+
+          <div className="space-y-3 animate-pulse">
+            <div className="h-4.5 w-28 rounded bg-neutral-200/40 dark:bg-neutral-800/40" />
+            <div className="h-4 w-40 rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+        <div className="h-8 w-44 rounded-lg bg-neutral-200/50 dark:bg-neutral-800/50 animate-pulse" />
+
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 animate-pulse">
+          {[1, 2, 3, 4].map((index) => (
+            <div key={index} className="rounded-3xl border border-line bg-card p-6 space-y-2">
+              <div className="h-10 w-16 rounded-md bg-neutral-200/40 dark:bg-neutral-800/40" />
+              <div className="h-4 w-24 rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 rounded-3xl border border-line bg-card p-6 space-y-4 animate-pulse">
+          <div className="flex items-baseline justify-between">
+            <div className="h-4 w-48 rounded bg-neutral-200/40 dark:bg-neutral-800/40" />
+            <div className="h-4 w-10 rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+          </div>
+          <div className="h-2.5 w-full rounded-full bg-neutral-200/30 dark:bg-neutral-800/30" />
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-28 text-center sm:px-6 animate-pulse">
+        <div className="mx-auto h-10 max-w-md rounded-lg bg-neutral-200/50 dark:bg-neutral-800/50 sm:h-12" />
+        <div className="mx-auto mt-4 h-4 max-w-sm rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+        <div className="mt-8 flex items-center justify-center gap-3">
+          <div className="h-10 w-36 rounded-md bg-neutral-200/40 dark:bg-neutral-800/40" />
+          <div className="h-10 w-24 rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+        </div>
+      </section>
+    </main>
+  );
+};
+
+const CoverageMain = () => {
   const { user } = useAuth();
   const { t } = useI18n();
   const [zoneId, setZoneId] = useState("");
@@ -220,6 +292,14 @@ const CoverageContent = () => {
         </div>
       </section>
     </main>
+  );
+};
+
+const CoverageContent = () => {
+  return (
+    <Suspense fallback={<CoverageSkeleton />}>
+      <CoverageMain />
+    </Suspense>
   );
 };
 

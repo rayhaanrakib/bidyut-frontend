@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import Link from "next/link";
@@ -19,7 +20,30 @@ import { otpSchema } from "@/validation";
 
 type OtpValues = z.infer<typeof otpSchema>;
 
-export const OtpForm = () => {
+const OtpFormSkeleton = () => {
+  return (
+    <div className="flex flex-col items-center gap-5 animate-pulse">
+      <div className="space-y-2 text-center">
+        <div className="mx-auto h-4 w-72 rounded bg-neutral-200/40 dark:bg-neutral-800/40" />
+      </div>
+
+      <div className="flex gap-2">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            key={i}
+            className="h-10 w-9 rounded-md border border-input bg-background/50"
+          />
+        ))}
+      </div>
+
+      <div className="h-10 w-24 rounded-md bg-neutral-200/40 dark:bg-neutral-800/40" />
+
+      <div className="h-3.5 w-44 rounded bg-neutral-200/20 dark:bg-neutral-800/20" />
+    </div>
+  );
+};
+
+const OtpFormMain = () => {
   const router = useRouter();
   const { t } = useI18n();
   const email = useSearchParams().get("email") ?? "";
@@ -73,5 +97,13 @@ export const OtpForm = () => {
         <Link href="/register" className="ml-1 font-medium text-primary underline-offset-4 hover:underline">Register</Link>
       </p>
     </form>
+  );
+};
+
+export const OtpForm = () => {
+  return (
+    <Suspense fallback={<OtpFormSkeleton />}>
+      <OtpFormMain />
+    </Suspense>
   );
 };

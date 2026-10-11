@@ -1,10 +1,10 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeClosed } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
@@ -23,7 +23,55 @@ import { loginSchema } from "@/validation";
 
 type LoginValues = z.infer<typeof loginSchema>;
 
-export const LoginForm = () => {
+const LoginFormSkeleton = () => {
+  return (
+    <div className="flex flex-col gap-5 animate-pulse">
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <div className="h-4 w-12 rounded bg-neutral-200/50 dark:bg-neutral-800/50" />
+          <div className="h-10 w-full rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="h-4 w-16 rounded bg-neutral-200/50 dark:bg-neutral-800/50" />
+            <div className="h-3.5 w-24 rounded bg-neutral-200/40 dark:bg-neutral-800/40" />
+          </div>
+          <div className="h-10 w-full rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+        </div>
+
+        <div className="h-10 w-full rounded-md bg-neutral-200/40 dark:bg-neutral-800/40" />
+      </div>
+
+      <div className="rounded-2xl border border-dashed p-3.5 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="h-3.5 w-24 rounded bg-neutral-200/40 dark:bg-neutral-800/40" />
+          <div className="h-4 w-12 rounded-full bg-neutral-200/30 dark:bg-neutral-800/30" />
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {[1, 2, 3, 4].map((index) => (
+            <div
+              key={index}
+              className="h-[42px] rounded-md border border-input bg-background/50"
+            />
+          ))}
+        </div>
+        <div className="mx-auto h-3 w-40 rounded bg-neutral-200/20 dark:bg-neutral-800/20" />
+      </div>
+
+      <div className="relative flex items-center justify-center py-2">
+        <div className="w-full border-t border-border" />
+        <div className="absolute h-3.5 w-28 rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+      </div>
+
+      <div className="h-10 w-full rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+
+      <div className="mx-auto h-4 w-48 rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+    </div>
+  );
+};
+
+const LoginMain = () => {
   const router = useRouter();
   const { t } = useI18n();
   const qc = useQueryClient();
@@ -120,5 +168,13 @@ export const LoginForm = () => {
         <Link href="/register" className="ml-1 font-medium text-primary underline-offset-4 hover:underline">{t("auth.toRegister")}</Link>
       </p>
     </div>
+  );
+};
+
+export const LoginForm = () => {
+  return (
+    <Suspense fallback={<LoginFormSkeleton />}>
+      <LoginMain />
+    </Suspense>
   );
 };

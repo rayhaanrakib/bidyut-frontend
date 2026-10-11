@@ -1,6 +1,6 @@
-
 "use client";
 
+import { Suspense } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +10,79 @@ import { Button } from "@/components/ui/button";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export const Hero = () => {
+const HeroSkeleton = () => {
+  return (
+    <section className="hero-glow relative isolate overflow-hidden pt-24 pb-16 sm:pt-32 sm:pb-20 lg:pt-28">
+      <div className="grid-bg pointer-events-none absolute inset-0 -z-20 opacity-70" />
+      <div
+        className="pointer-events-none absolute -right-40 top-20 -z-10 h-[500px] w-[500px] rounded-full bg-emerald-500/10 blur-[140px]"
+        aria-hidden="true"
+      />
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-12 lg:grid-cols-[1fr_0.95fr] lg:gap-10 xl:gap-16">
+          <div className="relative z-10">
+            <div className="inline-flex h-8 w-44 animate-pulse rounded-full bg-neutral-200/50 dark:bg-neutral-800/50" />
+
+            <div className="mt-8 space-y-4">
+              <div className="h-12 w-11/12 animate-pulse rounded-2xl bg-neutral-200/50 dark:bg-neutral-800/50 sm:h-16 lg:h-20" />
+              <div className="h-12 w-3/4 animate-pulse rounded-2xl bg-neutral-200/50 dark:bg-neutral-800/50 sm:h-16 lg:h-20" />
+            </div>
+
+            <div className="mt-7 space-y-2.5 max-w-lg">
+              <div className="h-4 w-full animate-pulse rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+              <div className="h-4 w-5/6 animate-pulse rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+            </div>
+
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="h-12 w-full animate-pulse rounded-md bg-neutral-200/40 dark:bg-neutral-800/40 sm:w-40" />
+              <div className="h-12 w-full animate-pulse rounded-md bg-neutral-200/40 dark:bg-neutral-800/40 sm:w-40" />
+            </div>
+
+            <div className="mt-10 flex items-center gap-3 sm:mt-14">
+              <div className="h-9 w-9 animate-pulse rounded-full bg-neutral-200/40 dark:bg-neutral-800/40" />
+              <div className="h-4 w-56 animate-pulse rounded-md bg-neutral-200/30 dark:bg-neutral-800/30" />
+            </div>
+          </div>
+
+          <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-[#101b17] p-2 sm:rounded-[2rem] sm:p-3">
+              <div className="relative min-h-[420px] overflow-hidden rounded-[1.35rem] bg-neutral-900/50 sm:min-h-[520px] sm:rounded-[1.5rem] animate-pulse">
+                <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/40 to-transparent" />
+
+                <div className="absolute left-5 right-5 top-5 flex items-center justify-between sm:left-7 sm:right-7 sm:top-7">
+                  <div className="h-8 w-48 rounded-full bg-white/10" />
+                  <div className="h-10 w-10 rounded-full bg-white/10" />
+                </div>
+
+                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8 space-y-4">
+                  <div className="h-3.5 w-32 rounded bg-white/10" />
+                  <div className="space-y-2">
+                    <div className="h-8 w-3/4 rounded-lg bg-white/10" />
+                    <div className="h-8 w-1/2 rounded-lg bg-white/10" />
+                  </div>
+                  <div className="h-4 w-2/3 rounded bg-white/10" />
+                </div>
+              </div>
+            </div>
+
+            <div className="absolute -bottom-5 right-4 h-[78px] w-56 rounded-2xl border border-line bg-card/90 p-3.5 shadow-xl sm:-right-5 sm:bottom-10 sm:p-4">
+              <div className="flex items-center gap-3">
+                <div className="h-11 w-11 animate-pulse rounded-xl bg-neutral-200/30 dark:bg-neutral-800/30" />
+                <div className="space-y-1.5 flex-1">
+                  <div className="h-4 w-3/4 animate-pulse rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+                  <div className="h-3 w-1/2 animate-pulse rounded bg-neutral-200/30 dark:bg-neutral-800/30" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const HeroContent = () => {
   const { t } = useI18n();
 
   return (
@@ -191,5 +263,13 @@ export const Hero = () => {
         </div>
       </div>
     </section>
+  );
+};
+
+export const Hero = () => {
+  return (
+    <Suspense fallback={<HeroSkeleton />}>
+      <HeroContent />
+    </Suspense>
   );
 };
