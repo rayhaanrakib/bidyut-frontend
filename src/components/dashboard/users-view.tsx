@@ -55,6 +55,8 @@ const UsersView = () => {
   }, [search]);
 
   const [deleting, setDeleting] = useState<User | null>(null);
+  const [roleUpdate, setRoleUpdate] = useState<{ user: User; role: string } | null>(null);
+  const [statusUpdate, setStatusUpdate] = useState<{ user: User; status: "ACTIVE" | "BLOCKED" } | null>(null);
   const [staffOpen, setStaffOpen] = useState(false);
 
   const {
@@ -72,10 +74,6 @@ const UsersView = () => {
   const setStatus = useSetUserStatus();
   const remove = useDeleteUser();
   const createStaff = useCreateStaff();
-
-  const guard = (fn: () => void) => {
-    try { fn(); } catch (err) { toast.error(err instanceof Error ? err.message : "Failed"); }
-  };
 
   const submitStaff = staffSubmit(async (values) => {
     try {
@@ -132,7 +130,7 @@ const UsersView = () => {
                   {isAdmin ? (
                     <Select
                       value={u.role} className="w-44 py-1.5 text-xs"
-                      onChange={(e) => guard(() => setRole.mutate({ id: u.id, role: e.target.value }))}
+                      onChange={(e) => setRoleUpdate({ user: u, role: e.target.value })}
                       aria-label={t("th.role")}
                     >
                       {["CUSTOMER", "FIELD_TECHNICIAN", "POWER_OPERATOR", "ADMIN"].map((r) => <option key={r} value={r}>{r}</option>)}
@@ -148,7 +146,7 @@ const UsersView = () => {
                     <div className="flex gap-2">
                       <Button
                         size="sm" variant="outline"
-                        onClick={() => guard(() => setStatus.mutate({ id: u.id, status: u.status === "ACTIVE" ? "BLOCKED" : "ACTIVE" }))}
+                        onClick={() => setStatusUpdate({ user: u, status: u.status === "ACTIVE" ? "BLOCKED" : "ACTIVE" })}
                       >
                         {u.status === "ACTIVE" ? "Block" : "Unblock"}
                       </Button>
@@ -205,6 +203,66 @@ const UsersView = () => {
         </form>
       </Modal>
 
+      <Modal open={Boolean(roleUpdate)} onClose={() => setRoleUpdate(null)} title={t("c.confirm")}>
+        <p className="text-sm text-muted">
+          Change role of <span className="font-semibold text-foreground">{roleUpdate?.user.name}</span> to <span className="font-semibold text-foreground">{roleUpdate?.role}</span>?
+        </p>
+        <div className="mt-6 flex justify-end gap-3">
+          <Button variant="ghost" size="sm" onClick={() => setRoleUpdate(null)}>{t("c.cancel")}</Button>
+          <Button
+            size="sm"
+            onClick={() => {
+              if (!roleUpdate) return;
+              setRole.mutate(
+                { id: roleUpdate.user.id, role: roleUpdate.role },
+                {
+                  onSuccess: () => {
+                    toast.success(`Role updated to ${roleUpdate.role} for ${roleUpdate.user.name}`);
+                    setRoleUpdate(null);
+                  },
+                  onError: (err) => {
+                    toast.error(err instanceof Error ? err.message : "Failed to update role");
+                    setRoleUpdate(null);
+                  },
+                }
+              );
+            }}
+          >
+            Confirm
+          </Button>
+        </div>
+      </Modal>
+
+      <Modal open={Boolean(statusUpdate)} onClose={() => setStatusUpdate(null)} title={t("c.confirm")}>
+        <p className="text-sm text-muted">
+          {statusUpdate?.status === "BLOCKED" ? "Block" : "Unblock"} <span className="font-semibold text-foreground">{statusUpdate?.user.name}</span>?
+        </p>
+        <div className="mt-6 flex justify-end gap-3">
+          <Button variant="ghost" size="sm" onClick={() => setStatusUpdate(null)}>{t("c.cancel")}</Button>
+          <Button
+            size="sm"
+            onClick={() => {
+              if (!statusUpdate) return;
+              setStatus.mutate(
+                { id: statusUpdate.user.id, status: statusUpdate.status },
+                {
+                  onSuccess: () => {
+                    toast.success(`Status updated to ${statusUpdate.status} for ${statusUpdate.user.name}`);
+                    setStatusUpdate(null);
+                  },
+                  onError: (err) => {
+                    toast.error(err instanceof Error ? err.message : "Failed to update status");
+                    setStatusUpdate(null);
+                  },
+                }
+              );
+            }}
+          >
+            Confirm
+          </Button>
+        </div>
+      </Modal>
+
       <Modal open={Boolean(deleting)} onClose={() => setDeleting(null)} title={t("c.confirm")}>
         <p className="text-sm text-muted">
           Soft-delete <span className="font-semibold text-foreground">{deleting?.name}</span>? They will be logged out immediately; their history stays in the database.
@@ -213,11 +271,18 @@ const UsersView = () => {
           <Button variant="ghost" size="sm" onClick={() => setDeleting(null)}>{t("c.cancel")}</Button>
           <Button
             variant="danger" size="sm"
-            onClick={async () => {
+            onClick={() => {
               if (!deleting) return;
-              try { await remove.mutateAsync(deleting.id); toast.success("User deleted (soft)"); }
-              catch (err) { toast.error(err instanceof Error ? err.message : "Failed"); }
-              finally { setDeleting(null); }
+              remove.mutate(deleting.id, {
+                onSuccess: () => {
+                  toast.success(`User ${deleting.name} deleted (soft)`);
+                  setDeleting(null);
+                },
+                onError: (err) => {
+                  toast.error(err instanceof Error ? err.message : "Failed to delete user");
+                  setDeleting(null);
+                },
+              });
             }}
           >
             {t("c.delete")}
